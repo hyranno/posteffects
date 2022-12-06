@@ -1,11 +1,10 @@
 import {createSignal, Show} from 'solid-js';
 import type {Component} from 'solid-js';
 
-import logo from './logo.svg';
 import styles from './App.module.css';
 
-import testimage from './testimages/photock-photo0000-1921.png';
-import Nop from './effects/nop';
+import testimage from 'testimages/photock-photo0000-1921.png';
+import Nop from 'effects/nop';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;

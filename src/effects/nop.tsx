@@ -1,4 +1,5 @@
 import type { Component } from 'solid-js';
+import * as glutil from 'glutil';
 
 const Nop: Component<{
   src: (HTMLCanvasElement | HTMLImageElement),
@@ -20,31 +21,11 @@ const Nop: Component<{
       outColor = texture(src, uv);
     }
   `
-
   const canvas = document.createElement("canvas")!;
   canvas.width = props.src.width;
   canvas.height = props.src.height;
-  const gl = canvas.getContext("webgl2")!;
-  const context = gl;
-  const program = context.createProgram()!;
-
-  function prepareShader(type: number, source: string, context: WebGL2RenderingContext) {
-    const shader = context.createShader(type)!;
-    context.shaderSource(shader, source);
-    context.compileShader(shader);
-    if (!context.getShaderParameter(shader, context.COMPILE_STATUS)){
-      console.log(context.getShaderInfoLog(shader)); //error
-    }
-    context.attachShader(program, shader);
-  }
-
-  prepareShader(gl.VERTEX_SHADER, vs, context);
-  prepareShader(gl.FRAGMENT_SHADER, fs, context);
-
-  context.linkProgram(program);
-  if (!context.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.log(context.getProgramInfoLog(program)); //error
-  }
+  const [context, program] = glutil.bindShader(canvas, vs, fs);
+  const gl = context;
 
   const vertexPositions = [[+1.0, +1.0], [+1.0, -1.0], [-1.0, -1.0], [-1.0, +1.0]];
   const vertexBuffer = context.createBuffer();
@@ -52,19 +33,8 @@ const Nop: Component<{
   context.bufferData(context.ARRAY_BUFFER, new Float32Array(vertexPositions.flat()), context.STATIC_DRAW);
   context.bindBuffer(context.ARRAY_BUFFER, null);
 
-  const resolution = [props.src.width, props.src.height];
-
-  function loadTexture(src: (HTMLCanvasElement | HTMLImageElement), texture: WebGLTexture, context: WebGL2RenderingContext) {
-    context.bindTexture(gl.TEXTURE_2D, texture);
-    context.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
-    context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-    context.generateMipmap(gl.TEXTURE_2D);
-    context.bindTexture(gl.TEXTURE_2D, null);
-  }
-
-  var srcTexture = context.createTexture()!;
-  loadTexture(props.src, srcTexture, context);
+  const srcTexture = context.createTexture()!;
+  glutil.loadTexture(props.src, srcTexture, context);
 
   function drawCall() {
     context.useProgram(program);
@@ -72,8 +42,9 @@ const Nop: Component<{
     context.bindBuffer(context.ARRAY_BUFFER, vertexBuffer);
     const location = context.getAttribLocation(program, 'position');
     context.enableVertexAttribArray(location);
-    context.vertexAttribPointer(location, vertexPositions[0].length, context.FLOAT, false, 0, 0);
+    context.vertexAttribPointer(location, 2, context.FLOAT, false, 0, 0);
     /* fragment */
+    const resolution = [props.src.width, props.src.height];
     const resolutionLocation = context.getUniformLocation(program, "resolution");
     gl.uniform2fv(resolutionLocation, resolution);
     const srcLocation = context.getUniformLocation(program, "src");
@@ -82,6 +53,7 @@ const Nop: Component<{
     gl.uniform1i(srcLocation, 0);
     /* draw call */
     context.drawArrays(context.TRIANGLE_FAN, 0, 4);
+    /* unbind */
     context.bindBuffer(context.ARRAY_BUFFER, null);
     context.bindTexture(gl.TEXTURE_2D, null);
   }
