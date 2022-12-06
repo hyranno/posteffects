@@ -1,0 +1,31 @@
+ポストエフェクト集
+TypeScript + SolidJS + WebGL
+
+
+onclickでsignal変更
+if (signal値) 画像を表示する
+
+
+Effects
+  nop
+  色収差
+  tone curve,
+  減色
+    ハーフトーン
+    ディザ減色
+  Bloom
+    knee + 1d filter
+  Glare
+    rotated 1d bloom
+  Halo
+    original + large bloom - small bloom
+  水の表現
+    角度が小さい -> 透明度が低い, 波が小さい
+    角度が大きい -> 透明度が高い, 波が大きい
+  グリッチ
+  wavelet変換
+  不可逆圧縮, 解凍
+
+
+contextをまたぐのでWebGLTextureを引き回すのは難しそう?
+常に同じcontextが返されるのなら大丈夫かもだが
