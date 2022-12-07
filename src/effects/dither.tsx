@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import * as glutil from 'glutil';
 
-const HalfToneLike: Component<{
+const Dither: Component<{
   src: (HTMLCanvasElement | HTMLImageElement),
 }> = (props) => {
   const vs = `#version 300 es
@@ -14,17 +14,25 @@ const HalfToneLike: Component<{
     precision mediump float;
     uniform vec2 resolution;
     uniform sampler2D src;
-    uniform float tileSize;
-    uniform vec4 requantizationScale;
-    uniform vec2 offset;
-    uniform float angle;
+    uniform int depth;
+    uniform float requantizationScale;
     out vec4 outColor;
     void main(){
       vec2 uv = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y) / resolution;
       vec4 color = texture(src, uv);
-      mat2 dcm = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
-      vec2 lCoord = mod(dcm*(gl_FragCoord.xy + offset), tileSize) / tileSize - vec2(0.5);
-      vec4 pattern = sqrt(lCoord.x*lCoord.x + lCoord.y*lCoord.y) * requantizationScale;
+      float tileSize = float(1 << depth); // pow(2.0, float(depth));
+      vec2 lCoord = mod(gl_FragCoord.xy, tileSize);
+      /* pattern when (depth == 2)
+      0 8 2 a = 0 2 0 2 *4 + 0 0 2 2
+      c 4 e 6   3 1 3 1      0 0 2 2
+      3 b 1 9   0 2 0 2      3 3 1 1
+      f 7 d 5   3 1 3 1      3 3 1 1
+      */
+      float pattern = 0.0;
+      for (int d=0; d<depth; d++) {
+        pattern += 4.0 * pattern + mod(2.0*float((int(lCoord.x) >> d) & 1) + 3.0*float((int(lCoord.y) >> d) & 1), 4.0);
+      }
+      pattern = pattern / (tileSize*tileSize) * requantizationScale ;
       vec4 requantized = requantizationScale * floor((color + pattern) / requantizationScale);
       outColor = requantized;
     }
@@ -59,21 +67,13 @@ const HalfToneLike: Component<{
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, srcTexture);
     gl.uniform1i(srcLocation, 0);
-    gl.uniform1f(
-      context.getUniformLocation(program, "tileSize"),
-      8.0
+    gl.uniform1i(
+      context.getUniformLocation(program, "depth"),
+      3
     );
-    gl.uniform4fv(
+    gl.uniform1f(
       context.getUniformLocation(program, "requantizationScale"),
-      [0.25, 0.25, 0.25, 1.0]
-    );
-    gl.uniform2fv(
-      context.getUniformLocation(program, "offset"),
-      [3.0, 5.0]
-    );
-    gl.uniform1f(
-      context.getUniformLocation(program, "angle"),
-      3.14 / 6.0
+      64.0 / 256.0
     );
     /* draw call */
     context.drawArrays(context.TRIANGLE_FAN, 0, 4);
@@ -90,4 +90,4 @@ const HalfToneLike: Component<{
   );
 };
 
-export default HalfToneLike;
+export default Dither;
