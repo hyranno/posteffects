@@ -18,7 +18,7 @@ const Dither: Component<{
     uniform float requantizationScale;
     out vec4 outColor;
     void main(){
-      vec2 uv = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y) / resolution;
+      vec2 uv = gl_FragCoord.xy / resolution;
       vec4 color = texture(src, uv);
       float tileSize = float(1 << depth); // pow(2.0, float(depth));
       vec2 lCoord = mod(gl_FragCoord.xy, tileSize);

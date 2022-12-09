@@ -7,6 +7,7 @@ import testimage from 'testimages/photock-photo0000-1921.png';
 import Nop from 'effects/nop';
 import HalfToneLike from 'effects/halftone';
 import Dither from 'effects/dither';
+import Blur from 'effects/blur';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
@@ -20,6 +21,9 @@ const App: Component<{}> = (_) => {
 
   const [visibleDither, setVisibileDither] = createSignal(false);
   const toggleVisibleDither = () => {setVisibileDither(!visibleDither())};
+
+  const [visibleBlur, setVisibileBlur] = createSignal(false);
+  const toggleVisibleBlur = () => {setVisibileBlur(!visibleBlur())};
 
   return (
     <div class={styles.App}>
@@ -41,6 +45,12 @@ const App: Component<{}> = (_) => {
       </div>
       <Show when={visibleDither()}>
         <Dither src={srcImage} />
+      </Show>
+      <div>
+        <a onClick={toggleVisibleBlur} href="#">Blur</a>
+      </div>
+      <Show when={visibleBlur()}>
+        <Blur src={srcImage} />
       </Show>
     </div>
   );

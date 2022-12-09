@@ -20,7 +20,7 @@ const HalfToneLike: Component<{
     uniform float angle;
     out vec4 outColor;
     void main(){
-      vec2 uv = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y) / resolution;
+      vec2 uv = gl_FragCoord.xy / resolution;
       vec4 color = texture(src, uv);
       mat2 dcm = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
       vec2 lCoord = mod(dcm*(gl_FragCoord.xy + offset), tileSize) / tileSize - vec2(0.5);

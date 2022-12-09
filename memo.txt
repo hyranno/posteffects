@@ -9,6 +9,8 @@ Effects
   減色
     ハーフトーン
     ディザ減色
+  Blur
+    1d filter
   Bloom
     knee + 1d filter
   Glare

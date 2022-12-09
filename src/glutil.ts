@@ -3,6 +3,7 @@
 export function loadTexture(src: (HTMLCanvasElement | HTMLImageElement), texture: WebGLTexture, context: WebGL2RenderingContext) {
   const gl = context;
   context.bindTexture(gl.TEXTURE_2D, texture);
+  context.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   context.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
   context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
@@ -13,8 +14,16 @@ export function loadTexture(src: (HTMLCanvasElement | HTMLImageElement), texture
 export function bindShader(
   canvas: HTMLCanvasElement, vs: string, fs: string
 ): [WebGL2RenderingContext, WebGLProgram] {
-  const gl = canvas.getContext("webgl2")!;
-  const context = gl;
+  const context = canvas.getContext("webgl2")!;
+  const program = prepareProgram(context, vs, fs);
+  return [context, program];
+}
+
+export function prepareProgram(
+  context: WebGL2RenderingContext,
+  vs: string, fs: string,
+): WebGLProgram {
+  const gl = context;
   const program = context.createProgram()!;
   prepareShader(program, gl.VERTEX_SHADER, vs, context);
   prepareShader(program, gl.FRAGMENT_SHADER, fs, context);
@@ -22,7 +31,7 @@ export function bindShader(
   if (!context.getProgramParameter(program, gl.LINK_STATUS)) {
     console.log(context.getProgramInfoLog(program)); //error
   }
-  return [context, program];
+  return program;
 }
 
 export function prepareShader(program: WebGLProgram, type: number, source: string, context: WebGL2RenderingContext) {
