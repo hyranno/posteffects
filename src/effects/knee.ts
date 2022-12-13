@@ -1,11 +1,10 @@
 import * as glutil from 'glutil';
 
-export function filter1d(
+export function knee(
   context: WebGL2RenderingContext,
   src: WebGLTexture,
   resolution: [number, number],
-  kernel: number[],
-  direction: [number, number],
+  threshold: number,
 ) {
   const vs = `#version 300 es
     in vec2 position;
@@ -17,18 +16,19 @@ export function filter1d(
     precision mediump float;
     uniform vec2 resolution;
     uniform sampler2D src;
-    uniform int kernelSize;
-    uniform float[128] kernel;
-    uniform vec2 direction;
+    uniform float threshold;
     out vec4 outColor;
+    float knee(float x, float t) {
+      return max(x - t, 0.0) / max(x, 0.0001);
+    }
     void main(){
       vec2 uv = gl_FragCoord.xy / resolution;
-      vec4 res = vec4(0);
-      for (int i=0; i<kernelSize; i++) {
-        vec2 sampleUV = uv + (float(i) - float(kernelSize)/2.0) * direction / resolution;
-        res += kernel[i] * texture(src, sampleUV);
-      }
-      outColor = res;
+      vec4 color = texture(src, uv);
+      float safeThreshold = clamp(threshold, 0.0, 0.999999);
+      float normalizer = 1.0 / knee(1.0, safeThreshold);
+      float srcBrightness = max(max(max(color.x, color.y), color.z), 0.0001);
+      float destBrightness = knee(srcBrightness, safeThreshold) * normalizer;
+      outColor = clamp(vec4(color.xyz * destBrightness / srcBrightness, color.w), 0.0, 1.0);
     }
   `
   let gl = context;
@@ -51,11 +51,7 @@ export function filter1d(
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, src);
   gl.uniform1i(context.getUniformLocation(program, "src"), 0);
-  gl.uniform1i(context.getUniformLocation(program, "kernelSize"), kernel.length);
-  kernel.forEach((v,i) =>
-    gl.uniform1f(context.getUniformLocation(program, "kernel["+i+"]"), v)
-  );
-  gl.uniform2fv(context.getUniformLocation(program, "direction"), direction);
+  gl.uniform1f(context.getUniformLocation(program, "threshold"), threshold);
 
   context.drawArrays(context.TRIANGLE_FAN, 0, 4);
 

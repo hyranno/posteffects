@@ -2,6 +2,9 @@
 TypeScript + SolidJS + WebGL
 
 
+effectsのtsと、それを表示するtsxは分ける(tsxをpreviewsへ)
+
+
 Effects
   nop
   色収差
@@ -10,13 +13,14 @@ Effects
     ハーフトーン
     ディザ減色
   Blur
-    1d filter
+    filter1d(filter1d(src))
   Bloom
-    knee + 1d filter
+    add(src, add(filter1d(filter1d(knee(src))), -(kernel_center^2)*knee(src)))
+    knee curve https://light11.hatenadiary.com/entry/2018/02/15/011155
   Glare
-    rotated 1d bloom
+    add(src, rotated_filter1d(knee(src)), rotated_filter1d(knee(src)), ...)
   Halo
-    original + large bloom - small bloom
+    add(src, large_bloom(src), -small_bloom(src))
   水の表現
     角度が小さい -> 透明度が低い, 波が小さい
     角度が大きい -> 透明度が高い, 波が大きい

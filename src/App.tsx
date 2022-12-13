@@ -8,6 +8,7 @@ import Nop from 'effects/nop';
 import HalfToneLike from 'effects/halftone';
 import Dither from 'effects/dither';
 import Blur from 'effects/blur';
+import Bloom from 'effects/bloom';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
@@ -52,6 +53,7 @@ const App: Component<{}> = (_) => {
       <Show when={visibleBlur()}>
         <Blur src={srcImage} />
       </Show>
+      <Bloom src={srcImage} />
     </div>
   );
 };
