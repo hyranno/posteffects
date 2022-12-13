@@ -12,5 +12,6 @@
     "noEmit": true,
     "baseUrl": "./src",
     "isolatedModules": true
-  }
+  },
+  "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx"]
 }

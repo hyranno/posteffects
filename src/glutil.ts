@@ -11,6 +11,37 @@ export function loadTexture(src: (HTMLCanvasElement | HTMLImageElement), texture
   context.bindTexture(gl.TEXTURE_2D, null);
 }
 
+export function createBufferTexture(
+  context: WebGL2RenderingContext,
+  resolution: [number, number],
+): WebGLTexture {
+  let gl = context;
+  const texture = context.createTexture()!;
+  context.bindTexture(gl.TEXTURE_2D, texture);
+  context.texImage2D(
+    gl.TEXTURE_2D, 0, gl.RGBA, resolution[0], resolution[1], 0, gl.RGBA, gl.UNSIGNED_BYTE, null
+  );
+  context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  context.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  context.bindTexture(gl.TEXTURE_2D, null);
+  return texture;
+}
+
+export function bindNewFramebuffer(
+  context: WebGL2RenderingContext,
+  texture: WebGLTexture,
+): WebGLFramebuffer {
+  let gl = context;
+  context.bindTexture(gl.TEXTURE_2D, texture);
+  const buffer = context.createFramebuffer()!;
+  context.bindFramebuffer(gl.FRAMEBUFFER, buffer);
+  context.framebufferTexture2D(
+    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0
+  );
+  context.bindTexture(gl.TEXTURE_2D, null);
+  return buffer;
+}
+
 export function bindShader(
   canvas: HTMLCanvasElement, vs: string, fs: string
 ): [WebGL2RenderingContext, WebGLProgram] {
