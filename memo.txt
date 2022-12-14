@@ -2,7 +2,7 @@
 TypeScript + SolidJS + WebGL
 
 
-effectsのtsと、それを表示するtsxは分ける(tsxをpreviewsへ)
+filter1dVec3, gaussianKernelVec3
 
 
 Effects

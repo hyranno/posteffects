@@ -22,11 +22,10 @@ export function filter1d(
     uniform vec2 direction;
     out vec4 outColor;
     void main(){
-      vec2 uv = gl_FragCoord.xy / resolution;
       vec4 res = vec4(0);
       for (int i=0; i<kernelSize; i++) {
-        vec2 sampleUV = uv + (float(i) - float(kernelSize)/2.0) * direction / resolution;
-        res += kernel[i] * texture(src, sampleUV);
+        vec2 uv = (gl_FragCoord.xy + (float(i) - float(kernelSize)/2.0) * direction) / resolution;
+        res += kernel[i] * texture(src, uv);
       }
       outColor = res;
     }

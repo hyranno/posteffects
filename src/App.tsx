@@ -8,6 +8,7 @@ import HalfToneLike from 'previews/halftone';
 import Dither from 'previews/dither';
 import Blur from 'previews/blur';
 import Bloom from 'previews/bloom';
+import Glare from 'previews/glare';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
@@ -21,6 +22,7 @@ const App: Component<{}> = (_) => {
       <Dither src={srcImage} />
       <Blur src={srcImage} />
       <Bloom src={srcImage} />
+      <Glare src={srcImage} />
     </div>
   );
 };

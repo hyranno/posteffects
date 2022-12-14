@@ -1,16 +1,9 @@
 import * as glutil from 'glutil';
+import {gaussianKernel} from 'util';
 
 import {knee} from 'effects/knee';
 import {blur} from 'effects/blur';
 import {add} from 'effects/add';
-
-function gaussianKernel(size: number): number[] {
-  const sigma = size / (2 * 3);
-  const half = (size - 1) / 2;
-  const weights: number[] = Array.from(Array(size), (_, i) => Math.exp(-(i - half)*(i - half) / (2*sigma*sigma)));
-  const denominator = weights.reduce((prev, curr) => prev+curr, 0);  // calc sum, not analytic integration, for approx error
-  return weights.map((v) => v/denominator);
-}
 
 export function bloom(
   context: WebGL2RenderingContext,
