@@ -9,6 +9,7 @@ import Dither from 'previews/dither';
 import Blur from 'previews/blur';
 import Bloom from 'previews/bloom';
 import Glare from 'previews/glare';
+import Halo from 'previews/halo';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
@@ -23,6 +24,7 @@ const App: Component<{}> = (_) => {
       <Blur src={srcImage} />
       <Bloom src={srcImage} />
       <Glare src={srcImage} />
+      <Halo src={srcImage} />
     </div>
   );
 };

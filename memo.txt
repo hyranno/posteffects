@@ -2,8 +2,6 @@
 TypeScript + SolidJS + WebGL
 
 
-filter1dVec3, gaussianKernelVec3
-
 
 Effects
   nop
@@ -21,12 +19,12 @@ Effects
     add(src, rotated_filter1d(knee(src)), rotated_filter1d(knee(src)), ...)
   Halo
     add(src, large_bloom(src), -small_bloom(src))
-  水の表現
-    角度が小さい -> 透明度が低い, 波が小さい
-    角度が大きい -> 透明度が高い, 波が大きい
   グリッチ
   wavelet変換
   不可逆圧縮, 解凍
+  水の表現
+    角度が小さい -> 透明度が低い, 波が小さい
+    角度が大きい -> 透明度が高い, 波が大きい
 
 
 contextをまたぐのでWebGLTextureを引き回すのは難しそう?
