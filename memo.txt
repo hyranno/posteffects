@@ -19,9 +19,11 @@ Effects
     add(src, rotated_filter1d(knee(src)), rotated_filter1d(knee(src)), ...)
   Halo
     add(src, large_bloom(src), -small_bloom(src))
-  グリッチ
   wavelet変換
   不可逆圧縮, 解凍
+    wavelet変換後、対数で量子化
+    圧縮状態のPNG、解凍後のPNG
+  グリッチ
   水の表現
     角度が小さい -> 透明度が低い, 波が小さい
     角度が大きい -> 透明度が高い, 波が大きい

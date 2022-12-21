@@ -1,3 +1,4 @@
+import {createSignal, Show} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import styles from './App.module.css';
@@ -10,21 +11,27 @@ import Blur from 'previews/blur';
 import Bloom from 'previews/bloom';
 import Glare from 'previews/glare';
 import Halo from 'previews/halo';
+import Wavelet from 'previews/wavelet';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
   srcImage.src = testimage;
+  const [visible, setVisibile] = createSignal(false);
+  srcImage.onload = (_) => setVisibile(true);
 
   return (
     <div class={styles.App}>
       <img src={testimage} />
-      <Nop src={srcImage} />
-      <HalfToneLike src={srcImage} />
-      <Dither src={srcImage} />
-      <Blur src={srcImage} />
-      <Bloom src={srcImage} />
-      <Glare src={srcImage} />
-      <Halo src={srcImage} />
+      <Show when={visible()}>
+        <Nop src={srcImage} />
+        <HalfToneLike src={srcImage} />
+        <Dither src={srcImage} />
+        <Blur src={srcImage} />
+        <Bloom src={srcImage} />
+        <Glare src={srcImage} />
+        <Halo src={srcImage} />
+        <Wavelet src={srcImage} />
+      </Show>
     </div>
   );
 };
