@@ -21,6 +21,7 @@ Effects
     add(src, large_bloom(src), -small_bloom(src))
   wavelet変換
   不可逆圧縮, 解凍
+    wavelet2d_5_3
     wavelet変換後、対数で量子化
     zlibで圧縮 https://github.com/imaya/zlib.js
     jpeg, webp などと同じサイズで比較

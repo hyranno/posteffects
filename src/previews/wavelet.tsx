@@ -2,7 +2,7 @@ import {createSignal, Show} from 'solid-js';
 import type { Component } from 'solid-js';
 import * as glutil from 'glutil';
 
-import {wavelet_5_3, waveletInverse_5_3} from 'effects/wavelet';
+import {wavelet2d_5_3, wavelet2dInverse_5_3} from 'effects/wavelet';
 
 const Wavelet: Component<{
   src: (HTMLCanvasElement | HTMLImageElement),
@@ -15,7 +15,7 @@ const Wavelet: Component<{
   let context0 = canvas0.getContext("webgl2")!;
   const srcTexture = context0.createTexture()!;
   glutil.loadTexture(props.src, srcTexture, context0);
-  wavelet_5_3(context0, srcTexture, null, resolution, resolution, 0);
+  wavelet2d_5_3(context0, srcTexture, null, resolution, 4);
 
   const canvas1 = document.createElement("canvas")!;
   canvas1.width = props.src.width;
@@ -23,7 +23,7 @@ const Wavelet: Component<{
   let context1 = canvas1.getContext("webgl2")!;
   const waveletTexture = context1.createTexture()!;
   glutil.loadTexture(canvas0, waveletTexture, context1);
-  waveletInverse_5_3(context1, waveletTexture, null, resolution, resolution, 0);
+  wavelet2dInverse_5_3(context1, waveletTexture, null, resolution, 4);
 
   const title = "Wavelet";
 

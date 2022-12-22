@@ -1,5 +1,6 @@
 import * as glutil from 'glutil';
 
+import {nop} from 'effects/nop';
 
 export function wavelet_5_3(
   context: WebGL2RenderingContext,
@@ -208,4 +209,54 @@ export function waveletInverse_5_3(
   /* unbind */
   context.bindBuffer(context.ARRAY_BUFFER, null);
   context.bindTexture(gl.TEXTURE_2D, null);
+}
+
+
+export function wavelet2d_5_3 (
+  context: WebGL2RenderingContext,
+  src: WebGLTexture,
+  dest: WebGLFramebuffer | null,
+  resolution: [number, number],
+  depth: number,
+) {
+  let gl = context;
+  let hTexture = glutil.createBufferTexture(context, resolution);
+  let hBuffer = glutil.bindNewFramebuffer(context, hTexture);
+  let wTexture = glutil.createBufferTexture(context, resolution);
+  let wBuffer = glutil.bindNewFramebuffer(context, wTexture);
+  nop(context, src, resolution);
+  var clip = resolution.slice() as [number, number];
+  for (var i: number = 0; i < depth; i++) {
+    wavelet_5_3(context, wTexture, hBuffer, resolution, clip, 0);
+    wavelet_5_3(context, hTexture, wBuffer, resolution, clip, 1);
+    clip = clip.map(v => Math.ceil(v/2)) as [number, number];
+  }
+  context.bindFramebuffer(gl.FRAMEBUFFER, dest);
+  nop(context, wTexture, resolution);
+}
+
+export function wavelet2dInverse_5_3(
+  context: WebGL2RenderingContext,
+  src: WebGLTexture,
+  dest: WebGLFramebuffer | null,
+  resolution: [number, number],
+  depth: number,
+){
+  let gl = context;
+  let hTexture = glutil.createBufferTexture(context, resolution);
+  let hBuffer = glutil.bindNewFramebuffer(context, hTexture);
+  let wTexture = glutil.createBufferTexture(context, resolution);
+  let wBuffer = glutil.bindNewFramebuffer(context, wTexture);
+  nop(context, src, resolution);
+  var clips = [resolution.slice() as [number, number]];
+  for (var i: number = 1; i < depth; i++) {
+    clips[i] = clips[i-1].map(v => Math.ceil(v/2)) as [number, number];
+  }
+  for (var i: number = depth - 1; 0 <= i; i--) {
+    let clip = clips[i];
+    waveletInverse_5_3(context, wTexture, hBuffer, resolution, clip, 1);
+    waveletInverse_5_3(context, hTexture, wBuffer, resolution, clip, 0);
+  }
+  context.bindFramebuffer(gl.FRAMEBUFFER, dest);
+  nop(context, wTexture, resolution);
 }
