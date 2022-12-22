@@ -12,6 +12,7 @@ import Bloom from 'previews/bloom';
 import Glare from 'previews/glare';
 import Halo from 'previews/halo';
 import Wavelet from 'previews/wavelet';
+import Compression from 'previews/compression';
 
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
@@ -31,6 +32,7 @@ const App: Component<{}> = (_) => {
         <Glare src={srcImage} />
         <Halo src={srcImage} />
         <Wavelet src={srcImage} />
+        <Compression src={srcImage} />
       </Show>
     </div>
   );

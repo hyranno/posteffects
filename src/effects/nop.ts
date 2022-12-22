@@ -16,9 +16,13 @@ export function nop(
     uniform vec2 resolution;
     uniform sampler2D src;
     out vec4 outColor;
+
+    vec2 uv(ivec2 pixel) {
+      return (vec2(pixel) + vec2(0.5)) / resolution;
+    }
+
     void main(){
-      vec2 uv = gl_FragCoord.xy / resolution;
-      outColor = texture(src, uv);
+      outColor = texture(src, uv(ivec2(gl_FragCoord.xy)));
     }
   `
   let gl = context;

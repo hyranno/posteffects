@@ -55,8 +55,7 @@ export function wavelet_5_3(
         outColor = texture(src, uv(ivec2(gl_FragCoord.xy)));
         return;
       }
-      int length_low = (int(resolution[axis]) + 1) / 2;
-      int length_high = int(resolution[axis]) - length_low;
+      int length_low = (int(clip[axis]) + 1) / 2;
       bool is_low = int(gl_FragCoord[axis]) < length_low;
       ivec2 direction = ivec2(0);
       direction[axis] = 1;
@@ -94,10 +93,11 @@ export function wavelet_5_3(
   gl.uniform2fv(context.getUniformLocation(program, "clip"), clip);
   gl.uniform1i(context.getUniformLocation(program, "axis"), axis);
 
+  context.bindFramebuffer(gl.FRAMEBUFFER, dest);
   context.drawArrays(context.TRIANGLE_FAN, 0, 4);
 
   /* unbind */
-  context.bindBuffer(context.ARRAY_BUFFER, dest);
+  context.bindBuffer(context.ARRAY_BUFFER, null);
   context.bindTexture(gl.TEXTURE_2D, null);
 }
 
@@ -202,9 +202,10 @@ export function waveletInverse_5_3(
   gl.uniform2fv(context.getUniformLocation(program, "clip"), clip);
   gl.uniform1i(context.getUniformLocation(program, "axis"), axis);
 
+  context.bindFramebuffer(gl.FRAMEBUFFER, dest);
   context.drawArrays(context.TRIANGLE_FAN, 0, 4);
 
   /* unbind */
-  context.bindBuffer(context.ARRAY_BUFFER, dest);
+  context.bindBuffer(context.ARRAY_BUFFER, null);
   context.bindTexture(gl.TEXTURE_2D, null);
 }

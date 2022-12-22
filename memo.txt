@@ -22,7 +22,9 @@ Effects
   wavelet変換
   不可逆圧縮, 解凍
     wavelet変換後、対数で量子化
-    圧縮状態のPNG、解凍後のPNG
+    zlibで圧縮 https://github.com/imaya/zlib.js
+    jpeg, webp などと同じサイズで比較
+    動画に適用して元画像に収束することを強みとすべきか?
   グリッチ
   水の表現
     角度が小さい -> 透明度が低い, 波が小さい
