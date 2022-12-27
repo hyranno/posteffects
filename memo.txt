@@ -21,6 +21,9 @@ TypeScript + SolidJS + WebGL
     navigator.mediaDevices.getUserMedia()
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
+filter1d, blur は ...vec3 で代用できるので消したい
+StackedEffect 的な effects.forEach((e) => e.update()) する GlEffect
+
 
 Effects
   nop

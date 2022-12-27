@@ -79,17 +79,23 @@ export function prepareShader(program: WebGLProgram, type: number, source: strin
 }
 
 
-export abstract class PreparedShader {
+export abstract class GlEffect {
   context: WebGL2RenderingContext;
-  program: WebGLProgram;
-  constructor(context: WebGL2RenderingContext, vs: string, fs: string) {
+  constructor(context: WebGL2RenderingContext) {
     this.context = context;
-    this.program = prepareProgram(context, vs, fs);
   }
   abstract update(): void;
 }
 
-export abstract class PostEffect extends PreparedShader {
+export abstract class PreparedShader extends GlEffect {
+  program: WebGLProgram;
+  constructor(context: WebGL2RenderingContext, vs: string, fs: string) {
+    super(context);
+    this.program = prepareProgram(context, vs, fs);
+  }
+}
+
+export abstract class PostEffectShader extends PreparedShader {
   vertexBuffer: WebGLBuffer;
   constructor(context: WebGL2RenderingContext, fs: string) {
     let vs = `#version 300 es

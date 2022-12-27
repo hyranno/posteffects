@@ -1,14 +1,16 @@
 import * as glutil from 'glutil';
 
 
-export class DitherShader extends glutil.PostEffect {
+export class DitherShader extends glutil.PostEffectShader {
   src: WebGLTexture;
+  dest: WebGLFramebuffer | null;
   resolution: [number, number];
   depth: number;
   requantizationScale: number;
   constructor(
     context: WebGL2RenderingContext,
     src: WebGLTexture,
+    dest: WebGLFramebuffer | null,
     resolution: [number, number],
     depth: number = 3,
     requantizationScale: number = 64/256,
@@ -42,6 +44,7 @@ export class DitherShader extends glutil.PostEffect {
     `;
     super(context, fs);
     this.src = src;
+    this.dest = dest;
     this.resolution = resolution;
     this.depth = depth;
     this.requantizationScale = requantizationScale;
@@ -62,6 +65,7 @@ export class DitherShader extends glutil.PostEffect {
       this.requantizationScale
     );
 
+    this.context.bindFramebuffer(gl.FRAMEBUFFER, this.dest);
     this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);
 
     /* unbind */

@@ -20,7 +20,7 @@ const HalfToneLike: Component<{
   const srcTexture = context.createTexture()!;
   glutil.loadTexture(props.src, srcTexture, context);
 
-  let effect = new HalfToneShader(context, srcTexture, resolution);
+  let effect = new HalfToneShader(context, srcTexture, null, resolution);
 
   const title = "HalfTone";
 

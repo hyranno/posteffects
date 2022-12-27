@@ -1,8 +1,9 @@
 import * as glutil from 'glutil';
 
 
-export class HalfToneShader extends glutil.PostEffect {
+export class HalfToneShader extends glutil.PostEffectShader {
   src: WebGLTexture;
+  dest: WebGLFramebuffer | null;
   resolution: [number, number];
   tileSize: number;
   requantizationScale: [number, number, number, number];
@@ -11,6 +12,7 @@ export class HalfToneShader extends glutil.PostEffect {
   constructor(
     context: WebGL2RenderingContext,
     src: WebGLTexture,
+    dest: WebGLFramebuffer | null,
     resolution: [number, number],
     tileSize: number = 8,
     requantizationScale: [number, number, number, number] = [1/4, 1/4, 1/4, 1/255],
@@ -38,6 +40,7 @@ export class HalfToneShader extends glutil.PostEffect {
     `;
     super(context, fs);
     this.src = src;
+    this.dest = dest;
     this.resolution = resolution;
     this.tileSize = tileSize;
     this.requantizationScale = requantizationScale;
@@ -62,6 +65,7 @@ export class HalfToneShader extends glutil.PostEffect {
     this.context.uniform2fv(this.context.getUniformLocation(this.program, "offset"), this.offset);
     this.context.uniform1f(this.context.getUniformLocation(this.program, "angle"), this.angle);
 
+    this.context.bindFramebuffer(gl.FRAMEBUFFER, this.dest);
     this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);
 
     /* unbind */

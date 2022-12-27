@@ -25,15 +25,14 @@ const App: Component<{}> = (_) => {
     <div class={styles.App}>
       <img src={testimage} />
       <Show when={visible()}>
-        <Nop src={srcImage} />
+        <Nop src={srcImage} update={frame} />
         <HalfToneLike src={srcImage} update={frame}/>
         <Dither src={srcImage} update={frame} />
-        <Blur src={srcImage} />
-        <Bloom src={srcImage} />
-        <Glare src={srcImage} />
-        <Halo src={srcImage} />
-        <Wavelet src={srcImage} />
-        <Compression src={srcImage} />
+        <Blur src={srcImage} update={frame} />
+        <Bloom src={srcImage} update={frame} />
+        <Glare src={srcImage} update={frame} />
+        <Halo src={srcImage} update={frame} />
+        <Wavelet src={srcImage} update={frame} />
       </Show>
     </div>
   );

@@ -1,56 +1,51 @@
 import * as glutil from 'glutil';
 
-export function nop(
-  context: WebGL2RenderingContext,
-  src: WebGLTexture,
-  resolution: [number, number],
-) {
-  const vs = `#version 300 es
-    in vec2 position;
-    void main(void) {
-      gl_Position = vec4(position, 0, 1);
-    }
-  `;
-  const fs = `#version 300 es
-    precision mediump float;
-    uniform vec2 resolution;
-    uniform sampler2D src;
-    out vec4 outColor;
+export class NopShader extends glutil.PostEffectShader {
+  src: WebGLTexture;
+  dest: WebGLFramebuffer | null;
+  resolution: [number, number];
+  constructor (
+    context: WebGL2RenderingContext,
+    src: WebGLTexture,
+    dest: WebGLFramebuffer | null,
+    resolution: [number, number],
+  ) {
+    const fs = `#version 300 es
+      precision mediump float;
+      uniform vec2 resolution;
+      uniform sampler2D src;
+      out vec4 outColor;
 
-    vec2 uv(ivec2 pixel) {
-      return (vec2(pixel) + vec2(0.5)) / resolution;
-    }
+      vec2 uv(ivec2 pixel) {
+        return (vec2(pixel) + vec2(0.5)) / resolution;
+      }
 
-    void main(){
-      outColor = texture(src, uv(ivec2(gl_FragCoord.xy)));
-    }
-  `
-  let gl = context;
-  let program = glutil.prepareProgram(context, vs, fs);
+      void main(){
+        outColor = texture(src, uv(ivec2(gl_FragCoord.xy)));
+      }
+    `
+    super(context, fs);
+    this.src = src;
+    this.dest = dest;
+    this.resolution = resolution;
+  }
 
-  const vertexPositions = [[+1.0, +1.0], [+1.0, -1.0], [-1.0, -1.0], [-1.0, +1.0]];
-  const vertexBuffer = context.createBuffer();
-  context.bindBuffer(context.ARRAY_BUFFER, vertexBuffer);
-  context.bufferData(context.ARRAY_BUFFER, new Float32Array(vertexPositions.flat()), context.STATIC_DRAW);
-  context.bindBuffer(context.ARRAY_BUFFER, null);
+  override update(){
+    let gl = this.context;
+    this.context.useProgram(this.program);
+    this.bindVertex();
 
-  context.useProgram(program);
-  /* vertex */
-  context.bindBuffer(context.ARRAY_BUFFER, vertexBuffer);
-  const location = context.getAttribLocation(program, 'position');
-  context.enableVertexAttribArray(location);
-  context.vertexAttribPointer(location, 2, context.FLOAT, false, 0, 0);
+    this.context.uniform2fv(this.context.getUniformLocation(this.program, "resolution"), this.resolution);
+    this.context.activeTexture(gl.TEXTURE0);
+    this.context.bindTexture(gl.TEXTURE_2D, this.src);
+    this.context.uniform1i(this.context.getUniformLocation(this.program, "src"), 0);
 
-  /* fragment */
-  gl.uniform2fv(context.getUniformLocation(program, "resolution"), resolution);
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, src);
-  gl.uniform1i(context.getUniformLocation(program, "src"), 0);
+    this.context.bindFramebuffer(gl.FRAMEBUFFER, this.dest);
+    this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);
 
-  /* draw call */
-  context.drawArrays(context.TRIANGLE_FAN, 0, 4);
+    /* unbind */
+    this.context.bindBuffer(this.context.ARRAY_BUFFER, null);
+    this.context.bindTexture(gl.TEXTURE_2D, null);
+  }
 
-  /* unbind */
-  context.bindBuffer(context.ARRAY_BUFFER, null);
-  context.bindTexture(gl.TEXTURE_2D, null);
 }

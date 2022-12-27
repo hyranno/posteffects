@@ -19,7 +19,7 @@ const Dither: Component<{
   const srcTexture = context.createTexture()!;
   glutil.loadTexture(props.src, srcTexture, context);
 
-  let effect = new DitherShader(context, srcTexture, resolution);
+  let effect = new DitherShader(context, srcTexture, null, resolution);
 
   const title = "Dither";
 
