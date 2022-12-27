@@ -1,5 +1,77 @@
 import * as glutil from 'glutil';
 
+
+export class DitherShader extends glutil.PostEffect {
+  src: WebGLTexture;
+  resolution: [number, number];
+  depth: number;
+  requantizationScale: number;
+  constructor(
+    context: WebGL2RenderingContext,
+    src: WebGLTexture,
+    resolution: [number, number],
+    depth: number = 3,
+    requantizationScale: number = 64/256,
+  ) {
+    const fs = `#version 300 es
+      precision mediump float;
+      uniform vec2 resolution;
+      uniform sampler2D src;
+      uniform int depth;
+      uniform float requantizationScale;
+      out vec4 outColor;
+      void main(){
+        vec2 uv = gl_FragCoord.xy / resolution;
+        vec4 color = texture(src, uv);
+        float tileSize = float(1 << depth); // pow(2.0, float(depth));
+        vec2 lCoord = mod(gl_FragCoord.xy, tileSize);
+        /* pattern when (depth == 2)
+        0 8 2 a = 0 2 0 2 *4 + 0 0 2 2
+        c 4 e 6   3 1 3 1      0 0 2 2
+        3 b 1 9   0 2 0 2      3 3 1 1
+        f 7 d 5   3 1 3 1      3 3 1 1
+        */
+        float pattern = 0.0;
+        for (int d=0; d<depth; d++) {
+          pattern += 4.0 * pattern + mod(2.0*float((int(lCoord.x) >> d) & 1) + 3.0*float((int(lCoord.y) >> d) & 1), 4.0);
+        }
+        pattern = pattern / (tileSize*tileSize) * requantizationScale ;
+        vec4 requantized = requantizationScale * floor((color + pattern) / requantizationScale);
+        outColor = requantized;
+      }
+    `;
+    super(context, fs);
+    this.src = src;
+    this.resolution = resolution;
+    this.depth = depth;
+    this.requantizationScale = requantizationScale;
+  }
+
+  override update(){
+    let gl = this.context;
+    this.context.useProgram(this.program);
+    this.bindVertex();
+
+    this.context.uniform2fv(this.context.getUniformLocation(this.program, "resolution"), this.resolution);
+    this.context.activeTexture(gl.TEXTURE0);
+    this.context.bindTexture(gl.TEXTURE_2D, this.src);
+    this.context.uniform1i(this.context.getUniformLocation(this.program, "src"), 0);
+    this.context.uniform1i(this.context.getUniformLocation(this.program, "depth"), this.depth);
+    this.context.uniform1f(
+      this.context.getUniformLocation(this.program, "requantizationScale"),
+      this.requantizationScale
+    );
+
+    this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);
+
+    /* unbind */
+    this.context.bindBuffer(this.context.ARRAY_BUFFER, null);
+    this.context.bindTexture(gl.TEXTURE_2D, null);
+  }
+
+}
+
+
 export function dither(
   context: WebGL2RenderingContext,
   src: WebGLTexture,

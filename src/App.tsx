@@ -17,6 +17,7 @@ import Compression from 'previews/compression';
 const App: Component<{}> = (_) => {
   const srcImage = document.createElement("img")!;
   srcImage.src = testimage;
+  const[frame, setFrame] = createSignal(-1);
   const [visible, setVisibile] = createSignal(false);
   srcImage.onload = (_) => setVisibile(true);
 
@@ -25,8 +26,8 @@ const App: Component<{}> = (_) => {
       <img src={testimage} />
       <Show when={visible()}>
         <Nop src={srcImage} />
-        <HalfToneLike src={srcImage} />
-        <Dither src={srcImage} />
+        <HalfToneLike src={srcImage} update={frame}/>
+        <Dither src={srcImage} update={frame} />
         <Blur src={srcImage} />
         <Bloom src={srcImage} />
         <Glare src={srcImage} />

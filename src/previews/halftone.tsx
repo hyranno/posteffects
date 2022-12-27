@@ -1,15 +1,17 @@
-import {createSignal, Show} from 'solid-js';
+import {createSignal, createEffect, on, Show} from 'solid-js';
 import type { Component } from 'solid-js';
 import * as glutil from 'glutil';
 
-import {halftone} from 'effects/halftone';
+import {HalfToneShader} from 'effects/halftone';
 
 const HalfToneLike: Component<{
-  src: (HTMLCanvasElement | HTMLImageElement),
+  src: (HTMLCanvasElement | HTMLImageElement | HTMLVideoElement),
+  update: () => any,
 }> = (props) => {
   const canvas = document.createElement("canvas")!;
   canvas.width = props.src.width;
   canvas.height = props.src.height;
+  const signalingCanvas = on(props.update, () => canvas);
 
   let resolution: [number, number] = [props.src.width, props.src.height];
 
@@ -18,10 +20,11 @@ const HalfToneLike: Component<{
   const srcTexture = context.createTexture()!;
   glutil.loadTexture(props.src, srcTexture, context);
 
-  halftone(context, srcTexture, resolution, 8, [0.25, 0.25, 0.25, 1/255], [3, 5], Math.PI/6);
+  let effect = new HalfToneShader(context, srcTexture, resolution);
 
   const title = "HalfTone";
 
+  createEffect(on(props.update, () => effect.update()));
   const [visible, setVisibile] = createSignal(false);
   const toggleVisible = () => {setVisibile(!visible())};
   return (
@@ -30,7 +33,7 @@ const HalfToneLike: Component<{
         <a onClick={toggleVisible} href="#">{title}</a>
       </div>
       <Show when={visible()}>
-        {canvas}
+        {signalingCanvas(undefined)}
       </Show>
     </div>
   );

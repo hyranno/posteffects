@@ -1,6 +1,10 @@
 
 
-export function loadTexture(src: (HTMLCanvasElement | HTMLImageElement), texture: WebGLTexture, context: WebGL2RenderingContext) {
+export function loadTexture(
+  src: (HTMLCanvasElement | HTMLImageElement | HTMLVideoElement),
+  texture: WebGLTexture,
+  context: WebGL2RenderingContext
+) {
   const gl = context;
   context.bindTexture(gl.TEXTURE_2D, texture);
   context.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -72,4 +76,39 @@ export function prepareShader(program: WebGLProgram, type: number, source: strin
     console.log(context.getShaderInfoLog(shader)); //error
   }
   context.attachShader(program, shader);
+}
+
+
+export abstract class PreparedShader {
+  context: WebGL2RenderingContext;
+  program: WebGLProgram;
+  constructor(context: WebGL2RenderingContext, vs: string, fs: string) {
+    this.context = context;
+    this.program = prepareProgram(context, vs, fs);
+  }
+  abstract update(): void;
+}
+
+export abstract class PostEffect extends PreparedShader {
+  vertexBuffer: WebGLBuffer;
+  constructor(context: WebGL2RenderingContext, fs: string) {
+    let vs = `#version 300 es
+      in vec2 position;
+      void main(void) {
+        gl_Position = vec4(position, 0, 1);
+      }
+    `;
+    super(context, vs, fs);
+    const vertexPositions = [[+1.0, +1.0], [+1.0, -1.0], [-1.0, -1.0], [-1.0, +1.0]];
+    this.vertexBuffer = context.createBuffer()!;
+    context.bindBuffer(context.ARRAY_BUFFER, this.vertexBuffer);
+    context.bufferData(context.ARRAY_BUFFER, new Float32Array(vertexPositions.flat()), context.STATIC_DRAW);
+    context.bindBuffer(context.ARRAY_BUFFER, null);
+  }
+  bindVertex(){
+    this.context.bindBuffer(this.context.ARRAY_BUFFER, this.vertexBuffer);
+    const location = this.context.getAttribLocation(this.program, 'position');
+    this.context.enableVertexAttribArray(location);
+    this.context.vertexAttribPointer(location, 2, this.context.FLOAT, false, 0, 0);
+  }
 }

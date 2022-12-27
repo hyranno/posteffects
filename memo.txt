@@ -2,6 +2,25 @@
 TypeScript + SolidJS + WebGL
 
 
+ソフトウェアとしての方向性を詰める
+  動画にリアルタイムで適用したい
+    effectsの改修
+      シェーダや内部バッファを保存しておく
+      updateでdraw
+    <video> HTMLMediaElement > HTMLVideoElement
+    context.texImage2D に HTMLVideoElement を渡せる
+      loadTexture に渡せるようにする
+    MediaStreamのaddtrackイベントから描画処理を呼ぶ
+      setFrame(frame()+1)
+      MediaStreamは
+        <HTMLMediaElement>.captureStream() から取得するか
+        navigator.mediaDevices.getUserMedia() から取得して <HTMLMediaElement>.srcObject=stream
+  エフェクトをGUIで動的にスタックしたい
+    パラメータもGUIから調節
+  ユーザのローカルから動画をストリーミング入力できたりしないか？
+    navigator.mediaDevices.getUserMedia()
+    https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
+
 
 Effects
   nop
@@ -21,11 +40,13 @@ Effects
     add(src, large_bloom(src), -small_bloom(src))
   wavelet変換
   不可逆圧縮, 解凍
-    wavelet2d_5_3
     wavelet変換後、対数で量子化
+    色空間の変換や、符号化方式も検討する
     zlibで圧縮 https://github.com/imaya/zlib.js
     jpeg, webp などと同じサイズで比較
-    動画に適用して元画像に収束することを強みとすべきか?
+    動画に適用して強みを活かすべきか
+      元画像に収束する
+      計算量が小さい(リソース、レイテンシでの有利)
   グリッチ
   水の表現
     角度が小さい -> 透明度が低い, 波が小さい

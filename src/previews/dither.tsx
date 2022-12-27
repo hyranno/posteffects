@@ -1,15 +1,17 @@
-import {createSignal, Show} from 'solid-js';
+import {createSignal, createEffect, on, Show} from 'solid-js';
 import type { Component } from 'solid-js';
 import * as glutil from 'glutil';
 
-import {dither} from 'effects/dither';
+import {DitherShader} from 'effects/dither';
 
 const Dither: Component<{
-  src: (HTMLCanvasElement | HTMLImageElement),
+  src: (HTMLCanvasElement | HTMLImageElement | HTMLVideoElement),
+  update: () => any,
 }> = (props) => {
   const canvas = document.createElement("canvas")!;
   canvas.width = props.src.width;
   canvas.height = props.src.height;
+  const signalingCanvas = on(props.update, () => canvas);
   let resolution: [number, number] = [props.src.width, props.src.height];
 
   let context = canvas.getContext("webgl2")!;
@@ -17,10 +19,11 @@ const Dither: Component<{
   const srcTexture = context.createTexture()!;
   glutil.loadTexture(props.src, srcTexture, context);
 
-  dither(context, srcTexture, resolution, 3, 64/256);
+  let effect = new DitherShader(context, srcTexture, resolution);
 
   const title = "Dither";
 
+  createEffect(on(props.update, () => effect.update()));
   const [visible, setVisibile] = createSignal(false);
   const toggleVisible = () => {setVisibile(!visible())};
   return (
@@ -29,7 +32,7 @@ const Dither: Component<{
         <a onClick={toggleVisible} href="#">{title}</a>
       </div>
       <Show when={visible()}>
-        {canvas}
+        {signalingCanvas(undefined)}
       </Show>
     </div>
   );
