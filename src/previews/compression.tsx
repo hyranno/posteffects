@@ -24,7 +24,6 @@ const Compression: Component<{
   const compressedTexture = context1.createTexture()!;
   glutil.loadTexture(canvas0, compressedTexture, context1);
   decompress(context1, compressedTexture, null, resolution, 4, 1.1, 0.2);
-  // TODO: jpegsize = canvas1.toDataURL(jpg).length/4
 
   const title = "Compression";
 
@@ -37,10 +36,10 @@ const Compression: Component<{
       </div>
       <Show when={visible()}>
         {canvas0}
-        compressed size: {canvas0.toDataURL("image/png").length/4}
+        compressed size: {canvas0.toDataURL("image/png").length} //base64 length, not 256
         {canvas1}
-        jpeg size: {canvas1.toDataURL("image/jpeg").length/4},
-        webp size: {canvas1.toDataURL("image/webp").length/4}
+        jpeg size: {canvas1.toDataURL("image/jpeg").length},
+        webp size: {canvas1.toDataURL("image/webp").length}
       </Show>
     </div>
   );

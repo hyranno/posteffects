@@ -17,13 +17,15 @@ const Blur: Component<{
   let context = canvas.getContext("webgl2")!;
 
   const srcTexture = context.createTexture()!;
-  glutil.loadTexture(props.src, srcTexture, context);
 
   let effect = new BlurEffect(context, srcTexture, null, resolution, 7);
 
   const title = "Blur";
 
-  createEffect(on(props.update, () => effect.update()));
+  createEffect(on(props.update, () => {
+    glutil.loadTexture(props.src, srcTexture, context);
+    effect.update();
+  }));
   const [visible, setVisibile] = createSignal(false);
   const toggleVisible = () => {setVisibile(!visible())};
   return (

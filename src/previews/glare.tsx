@@ -17,7 +17,6 @@ const Glare: Component<{
   let context = canvas.getContext("webgl2")!;
 
   const srcTexture = context.createTexture()!;
-  glutil.loadTexture(props.src, srcTexture, context);
 
   let effect = new GlareEffect(context, srcTexture, null, resolution, 0.7, [
     {size: 127, angle: Math.PI*0.05, strength: 0.7},
@@ -26,7 +25,10 @@ const Glare: Component<{
 
   const title = "Glare";
 
-  createEffect(on(props.update, () => effect.update()));
+  createEffect(on(props.update, () => {
+    glutil.loadTexture(props.src, srcTexture, context);
+    effect.update();
+  }));
   const [visible, setVisibile] = createSignal(false);
   const toggleVisible = () => {setVisibile(!visible())};
   return (

@@ -4,21 +4,15 @@ TypeScript + SolidJS + WebGL
 
 ソフトウェアとしての方向性を詰める
   動画にリアルタイムで適用したい
-    effectsの改修
-      シェーダや内部バッファを保存しておく
-      updateでdraw
-    <video> HTMLMediaElement > HTMLVideoElement
-    context.texImage2D に HTMLVideoElement を渡せる
-      loadTexture に渡せるようにする
-    MediaStreamのaddtrackイベントから描画処理を呼ぶ
-      setFrame(frame()+1)
-      MediaStreamは
-        <HTMLMediaElement>.captureStream() から取得するか
-        navigator.mediaDevices.getUserMedia() から取得して <HTMLMediaElement>.srcObject=stream
+    ontimeupdateから描画処理を呼ぶ
+      負荷がかからない程度の頻度でしか更新してくれない
+    MediaStreamのaddtrackイベントは違うっぽい
+      HTMLMediaElement.captureStream に linter が対応してないのもある?
   エフェクトをGUIで動的にスタックしたい
     パラメータもGUIから調節
   ユーザのローカルから動画をストリーミング入力できたりしないか？
     navigator.mediaDevices.getUserMedia()
+      <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
 filter1d, blur は ...vec3 で代用できるので消したい

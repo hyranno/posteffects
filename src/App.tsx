@@ -3,7 +3,7 @@ import type {Component} from 'solid-js';
 
 import styles from './App.module.css';
 
-import testimage from 'testimages/photock-photo0000-1921.png';
+import testimage from 'testimages/Pexels Videos 2053100.mp4'
 import Nop from 'previews/nop';
 import HalfToneLike from 'previews/halftone';
 import Dither from 'previews/dither';
@@ -12,18 +12,25 @@ import Bloom from 'previews/bloom';
 import Glare from 'previews/glare';
 import Halo from 'previews/halo';
 import Wavelet from 'previews/wavelet';
-import Compression from 'previews/compression';
 
 const App: Component<{}> = (_) => {
-  const srcImage = document.createElement("img")!;
-  srcImage.src = testimage;
   const[frame, setFrame] = createSignal(-1);
+
+  const srcImage = document.createElement("video")!;
+  srcImage.setAttribute("controls", "true");
+  srcImage.onplay = (_) => { //onloadeddata
+    srcImage.width = srcImage.videoWidth;
+    srcImage.height = srcImage.videoHeight;
+    setVisibile(true);
+  };
+  srcImage.ontimeupdate = (_) => setFrame(frame()+1);
+  srcImage.src = testimage;
+
   const [visible, setVisibile] = createSignal(false);
-  srcImage.onload = (_) => setVisibile(true);
 
   return (
     <div class={styles.App}>
-      <img src={testimage} />
+      {srcImage}
       <Show when={visible()}>
         <Nop src={srcImage} update={frame} />
         <HalfToneLike src={srcImage} update={frame}/>
