@@ -9,14 +9,18 @@ TypeScript + SolidJS + WebGL
     MediaStreamのaddtrackイベントは違うっぽい
       HTMLMediaElement.captureStream に linter が対応してないのもある?
   エフェクトをGUIで動的にスタックしたい
-    パラメータもGUIから調節
+    スタック末尾にエフェクト追加ボタン(まずはNopのみ)
+    スタック内の各エフェクトをアコーディオンにしておく(setVisibleとShowを持つ)(まずは無くていい)
+      パラメータ調節(signal経由)
+      削除
   ユーザのローカルから動画をストリーミング入力できたりしないか？
+    OBSの仮想カメラなら普通にいけそう
     navigator.mediaDevices.getUserMedia()
       <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
 filter1d, blur は ...vec3 で代用できるので消したい
-StackedEffect 的な effects.forEach((e) => e.update()) する GlEffect
+StackedEffectはbloomとかにも使えそう
 
 
 Effects
