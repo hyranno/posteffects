@@ -44,4 +44,12 @@ export class HaloEffect extends glutil.GlEffect {
     this.add0.update();
     this.add1.update();
   }
+
+  setSrc(src: WebGLTexture): void {
+    this.knee.src = src;
+    this.add1.src0 = src;
+  }
+  setDest(dest: WebGLFramebuffer | null): void {
+    this.add1.dest = dest;
+  }
 }

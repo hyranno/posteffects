@@ -63,4 +63,12 @@ export class GlareEffect extends glutil.GlEffect {
     }
     this.add.update();
   }
+
+  setSrc(src: WebGLTexture) {
+    this.knee.src = src;
+    this.add.src0 = src;
+  }
+  setDest(dest: WebGLTexture | null) {
+    this.add.dest = dest;
+  }
 }

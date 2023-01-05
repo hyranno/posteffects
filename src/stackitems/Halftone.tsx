@@ -3,10 +3,10 @@ import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
 import {EffectItem} from 'EffectStack';
-import {NopShader} from 'effects/nop';
+import {HalfToneShader} from 'effects/halftone';
 
-export class Nop implements EffectItem {
-  effect: NopShader;
+export class HalfTone implements EffectItem {
+  effect: HalfToneShader;
   remover: (e: EffectItem) => void;
   constructor(
     context: WebGL2RenderingContext,
@@ -14,13 +14,13 @@ export class Nop implements EffectItem {
     remover: (e: EffectItem) => void,
   ) {
     let dummy = glutil.createBufferTexture(context, resolution);
-    this.effect = new NopShader(context, dummy, null, resolution);
+    this.effect = new HalfToneShader(context, dummy, null, resolution);
     this.remover = remover;
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
     return <>
-      <a onClick={_ => setVisibile(!visible())}> Nop </a>
+      <a onClick={_ => setVisibile(!visible())}> HalfTone </a>
       <Show when={visible()}>
         <a onClick={_ => this.remover(this)}>remove</a>
       </Show>

@@ -1,9 +1,15 @@
-import {createSignal, createEffect, on, For} from 'solid-js';
+import {createSignal, createEffect, on, Show, For} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
 import {BundledEffects} from 'effects/bundle';
 import {Nop} from 'stackitems/Nop';
+import {Dither} from 'stackitems/Dither';
+import {HalfTone} from 'stackitems/Halftone';
+import {Bloom} from 'stackitems/Bloom';
+import {Blur} from 'stackitems/Blur';
+import {Glare} from 'stackitems/Glare';
+import {Halo} from 'stackitems/Halo';
 
 export interface EffectItem {
   effect: glutil.GlEffect;
@@ -66,11 +72,22 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
     );
   }
   ui: Component<{}> = () => {
+    let [newVisible, setNewVisible] = createSignal(false);
+    let remover = (e: EffectItem) => {this.remove(e)};
     return <>
       <For each={this.items()}>
         {item => <item.ui />}
       </For>
-      <a onClick={_ => this.push(new Nop(this.context, this.resolution, e => {this.remove(e)}))}> + </a>
+      <a onClick={_ => setNewVisible(!newVisible())}> + </a>
+      <Show when={newVisible()}>
+        <a onClick={_ => this.push(new Nop(this.context, this.resolution, remover))}>Nop</a>
+        <a onClick={_ => this.push(new Dither(this.context, this.resolution, remover))}>Dither</a>
+        <a onClick={_ => this.push(new HalfTone(this.context, this.resolution, remover))}>HalfTone</a>
+        <a onClick={_ => this.push(new Bloom(this.context, this.resolution, remover))}>Bloom</a>
+        <a onClick={_ => this.push(new Blur(this.context, this.resolution, remover))}>Blur</a>
+        <a onClick={_ => this.push(new Glare(this.context, this.resolution, remover))}>Glare</a>
+        <a onClick={_ => this.push(new Halo(this.context, this.resolution, remover))}>Halo</a>
+      </Show>
     </>;
   };
   setSrc(src: WebGLTexture) {
