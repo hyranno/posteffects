@@ -48,4 +48,16 @@ export class BloomEffect extends glutil.GlEffect {
   setDest(dest: WebGLFramebuffer | null): void {
     this.add1.dest = dest;
   }
+  setSize(size: number) {
+    this.blur.setKernelSize(size);
+    let kernel = gaussianKernel(size);
+    let kernelCenter = kernel[Math.floor(kernel.length / 2)];
+    this.add0.coef = [1, -kernelCenter*kernelCenter];
+  }
+  setThreshold(threshold: number) {
+    this.knee.threshold = threshold;
+  }
+  setStrength(strength: number) {
+    this.add1.coef = [1, strength];
+  }
 }

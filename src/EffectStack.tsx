@@ -1,4 +1,4 @@
-import {createSignal, createEffect, on, Show, For} from 'solid-js';
+import {createSignal, createEffect, on, For} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
@@ -10,6 +10,8 @@ import {Bloom} from 'stackitems/Bloom';
 import {Blur} from 'stackitems/Blur';
 import {Glare} from 'stackitems/Glare';
 import {Halo} from 'stackitems/Halo';
+
+import styles from './EffectStack.module.css';
 
 export interface EffectItem {
   effect: glutil.GlEffect;
@@ -72,23 +74,32 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
     );
   }
   ui: Component<{}> = () => {
-    let [newVisible, setNewVisible] = createSignal(false);
     let remover = (e: EffectItem) => {this.remove(e)};
-    return <>
-      <For each={this.items()}>
-        {item => <item.ui />}
-      </For>
-      <a onClick={_ => setNewVisible(!newVisible())}> + </a>
-      <Show when={newVisible()}>
-        <a onClick={_ => this.push(new Nop(this.context, this.resolution, remover))}>Nop</a>
-        <a onClick={_ => this.push(new Dither(this.context, this.resolution, remover))}>Dither</a>
-        <a onClick={_ => this.push(new HalfTone(this.context, this.resolution, remover))}>HalfTone</a>
-        <a onClick={_ => this.push(new Bloom(this.context, this.resolution, remover))}>Bloom</a>
-        <a onClick={_ => this.push(new Blur(this.context, this.resolution, remover))}>Blur</a>
-        <a onClick={_ => this.push(new Glare(this.context, this.resolution, remover))}>Glare</a>
-        <a onClick={_ => this.push(new Halo(this.context, this.resolution, remover))}>Halo</a>
-      </Show>
-    </>;
+    let options = new Map<string, ()=>EffectItem>([
+      ["Nop", () => new Nop(this.context, this.resolution, remover)],
+      ["Dither", () => new Dither(this.context, this.resolution, remover)],
+      ["HalfTone", () => new HalfTone(this.context, this.resolution, remover)],
+      ["Bloom", () => new Bloom(this.context, this.resolution, remover)],
+      ["Blur", () => new Blur(this.context, this.resolution, remover)],
+      ["Glare", () => new Glare(this.context, this.resolution, remover)],
+      ["Halo", () => new Halo(this.context, this.resolution, remover)],
+    ]);
+    let [selected, setSelected] = createSignal(options.keys().next().value);
+    return <div class={styles.EffectStack}>
+      <div class={styles.EffectItems}>
+        <For each={this.items()}>
+          {item => <item.ui />}
+        </For>
+      </div>
+      <div>
+        <a onClick={_ => this.push(options.get(selected())!())}> + </a>
+        <select value={selected()} onInput={e => setSelected(e.currentTarget.value)}>
+          <For each={Array.from(options.keys())}>{
+            filter => <option value={filter}>{filter}</option>
+          }</For>
+        </select>
+      </div>
+    </div>;
   };
   setSrc(src: WebGLTexture) {
     this.src = src;

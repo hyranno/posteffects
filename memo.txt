@@ -8,10 +8,12 @@ TypeScript + SolidJS + WebGL
       負荷がかからない程度の頻度でしか更新してくれない
     MediaStreamのaddtrackイベントは違うっぽい
       HTMLMediaElement.captureStream に linter が対応してないのもある?
+    setIntervalで描画を呼んでいいか
   エフェクトをGUIで動的にスタックしたい
+    シェーダグラフ作れれば一番良いけど労力が厳しいしユーザのハードルも上がりそう
     スタック末尾にエフェクト追加ボタン
     スタック内の各エフェクトをアコーディオンにしておく(setVisibleとShowを持つ)
-      パラメータ調節(signal経由)(まずは無くていい)
+      パラメータ調節(signal経由)
       削除
   ユーザのローカルから動画をストリーミング入力できたりしないか？
     OBSの仮想カメラなら普通にいけそう
@@ -39,6 +41,22 @@ Effects
     add(src, rotated_filter1d(knee(src)), rotated_filter1d(knee(src)), ...)
   Halo
     add(src, large_bloom(src), -small_bloom(src))
+  モーションブラー
+  光の軌跡
+    knee + motion blur
+  radial blur
+    radial filter
+  radial edge
+    radial filter
+  radial color grading
+  グリッチ
+    https://github.com/syuilo/glitch-studio
+    トーンカーブ
+    色調遷移
+    translate
+    adaptive threshold
+    モザイク
+    歪み
   wavelet変換
   不可逆圧縮, 解凍
     wavelet変換後、対数で量子化
@@ -48,8 +66,6 @@ Effects
     動画に適用して強みを活かすべきか
       元画像に収束する
       計算量が小さい(リソース、レイテンシでの有利)
-  グリッチ
-    https://github.com/syuilo/glitch-studio
   水の表現
     角度が小さい -> 透明度が低い, 波が小さい
     角度が大きい -> 透明度が高い, 波が大きい

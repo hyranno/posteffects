@@ -1,4 +1,4 @@
-import {createSignal, Show} from 'solid-js';
+import {createSignal, createEffect, Show} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
@@ -19,12 +19,20 @@ export class Blur implements EffectItem {
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
-    return <>
+    let [kernelSize, setKernelSize] = createSignal(31);
+    createEffect(()=>this.effect.setKernelSize(kernelSize()));
+    return <div>
       <a onClick={_ => setVisibile(!visible())}> Blur </a>
       <Show when={visible()}>
+        <label> size
+          <input type="number" step="1"
+            value={kernelSize()}
+            onInput={e => setKernelSize(parseInt(e.currentTarget.value))}
+          />
+        </label>
         <a onClick={_ => this.remover(this)}>remove</a>
       </Show>
-    </>;
+    </div>;
   };
   setSrc(src: WebGLTexture): void {
     this.effect.setSrc(src);

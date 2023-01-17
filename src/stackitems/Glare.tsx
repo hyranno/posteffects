@@ -22,12 +22,12 @@ export class Glare implements EffectItem {
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
-    return <>
+    return <div>
       <a onClick={_ => setVisibile(!visible())}> Glare </a>
       <Show when={visible()}>
         <a onClick={_ => this.remover(this)}>remove</a>
       </Show>
-    </>;
+    </div>;
   };
   setSrc(src: WebGLTexture): void {
     this.effect.setSrc(src);

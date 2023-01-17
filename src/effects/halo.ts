@@ -52,4 +52,18 @@ export class HaloEffect extends glutil.GlEffect {
   setDest(dest: WebGLFramebuffer | null): void {
     this.add1.dest = dest;
   }
+  setThreshold(threshold: number) {
+    this.knee.threshold = threshold;
+  }
+  /*
+  setRadiusInner(radius: [number, number, number]) {
+    this.blurInner.setSize(radius);
+  }
+  setRadiusOuter(radius: [number, number, number]) {
+    this.blurOuter.setSize(radius);
+  }
+  */
+  setStrength(strength: number) {
+    this.add1.coef = [1, strength];
+  }
 }

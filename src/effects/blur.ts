@@ -31,4 +31,9 @@ export class BlurEffect extends glutil.GlEffect {
   setDest(dest: WebGLFramebuffer | null): void {
     this.verticalBlur.dest = dest;
   }
+  setKernelSize(size: number): void {
+    let kernel = gaussianKernel(size);
+    this.horizontalBlur.kernel = kernel;
+    this.verticalBlur.kernel = kernel;
+  }
 }

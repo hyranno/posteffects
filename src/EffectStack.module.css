@@ -1,0 +1,21 @@
+
+.EffectStack {
+  border: 1px solid rgb(100, 100, 100);
+  padding: 4px;
+}
+
+.EffectItems > div {
+  border: 1px solid rgb(100, 100, 200);
+  margin: 2px;
+}
+
+.EffectItems > div > a:first-of-type {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background-color: rgb(200, 200, 255);
+}
+
+.EffectItems label {
+  display: block;
+}
