@@ -10,6 +10,7 @@ import {Bloom} from 'stackitems/Bloom';
 import {Blur} from 'stackitems/Blur';
 import {Glare} from 'stackitems/Glare';
 import {Halo} from 'stackitems/Halo';
+import {MotionBlur} from 'stackitems/MotionBlur';
 
 import styles from './EffectStack.module.css';
 
@@ -83,6 +84,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["Blur", () => new Blur(this.context, this.resolution, remover)],
       ["Glare", () => new Glare(this.context, this.resolution, remover)],
       ["Halo", () => new Halo(this.context, this.resolution, remover)],
+      ["MotionBlur", () => new MotionBlur(this.context, this.resolution, remover)],
     ]);
     let [selected, setSelected] = createSignal(options.keys().next().value);
     return <div class={styles.EffectStack}>

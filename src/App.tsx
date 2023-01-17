@@ -11,12 +11,15 @@ const App: Component<{}> = (_) => {
 
   const srcImage = document.createElement("video")!;
   srcImage.setAttribute("controls", "true");
-  srcImage.onplay = (_) => { //onloadeddata
+  setTimeout(() => { // srcImage.onloadeddata
     srcImage.width = srcImage.videoWidth;
     srcImage.height = srcImage.videoHeight;
     setVisibile(true);
-  };
-  srcImage.ontimeupdate = (_) => setFrame(frame()+1);
+  }, 1000);
+  setInterval( // srcImage.ontimeupdate
+    () => setFrame(frame()+1),
+    1000/30
+  );
   srcImage.src = testimage;
 
   const [visible, setVisibile] = createSignal(false);
