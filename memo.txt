@@ -21,6 +21,9 @@ TypeScript + SolidJS + WebGL
       <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
+SignalingForm
+  getter, setter
+  int, float, vec2, vec3, vec4, ivec3,
 filter1d, blur は ...vec3 で代用できるので消したい
 StackedEffectはbloomとかにも使えそう
 
@@ -44,11 +47,16 @@ Effects
   モーションブラー
   光の軌跡
     knee + motion blur
+  radial filter
+    外へ行くほどkernelを大きくしたい
   radial blur
     radial filter
   radial edge
-    radial filter
+    radial filter (正規分布の微分)
   radial color grading
+    contrast
+    tint, luminous, saturation
+    hue (rainbow)
   グリッチ
     https://github.com/syuilo/glitch-studio
     トーンカーブ
@@ -63,6 +71,7 @@ Effects
     色空間の変換や、符号化方式も検討する
     zlibで圧縮 https://github.com/imaya/zlib.js
     jpeg, webp などと同じサイズで比較
+     base64は6ビットなので元々の4/3倍
     動画に適用して強みを活かすべきか
       元画像に収束する
       計算量が小さい(リソース、レイテンシでの有利)

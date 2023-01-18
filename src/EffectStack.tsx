@@ -12,6 +12,7 @@ import {Glare} from 'stackitems/Glare';
 import {Halo} from 'stackitems/Halo';
 import {MotionBlur} from 'stackitems/MotionBlur';
 import {LightTrail} from 'stackitems/LightTrail';
+import {RadialBlur} from 'stackitems/RadialBlur';
 
 import styles from './EffectStack.module.css';
 
@@ -87,6 +88,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["Halo", () => new Halo(this.context, this.resolution, remover)],
       ["MotionBlur", () => new MotionBlur(this.context, this.resolution, remover)],
       ["LightTrail", () => new LightTrail(this.context, this.resolution, remover)],
+      ["RadialBlur", () => new RadialBlur(this.context, this.resolution, remover)],
     ]);
     let [selected, setSelected] = createSignal(options.keys().next().value);
     return <div class={styles.EffectStack}>
