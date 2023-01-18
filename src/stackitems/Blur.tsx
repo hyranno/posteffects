@@ -2,6 +2,7 @@ import {createSignal, createEffect, Show} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
+import {SignalingInputVec, SignalingInputInt, SignalingInputFloat} from 'UtilComponents';
 import {EffectItem} from 'EffectStack';
 import {BlurEffect} from 'effects/blur';
 
@@ -19,16 +20,13 @@ export class Blur implements EffectItem {
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
-    let [kernelSize, setKernelSize] = createSignal(31);
-    createEffect(()=>this.effect.setKernelSize(kernelSize()));
+    let kernelSize = new SignalingInputInt(31);
+    createEffect(()=>this.effect.setKernelSize(kernelSize.accessor()));
     return <div>
       <a onClick={_ => setVisibile(!visible())}> Blur </a>
       <Show when={visible()}>
         <label> size
-          <input type="number" step="1"
-            value={kernelSize()}
-            onInput={e => setKernelSize(parseInt(e.currentTarget.value))}
-          />
+          <kernelSize.inputs />
         </label>
         <a onClick={_ => this.remover(this)}>remove</a>
       </Show>

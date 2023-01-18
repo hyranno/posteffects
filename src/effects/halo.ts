@@ -55,14 +55,12 @@ export class HaloEffect extends glutil.GlEffect {
   setThreshold(threshold: number) {
     this.knee.threshold = threshold;
   }
-  /*
   setRadiusInner(radius: [number, number, number]) {
-    this.blurInner.setSize(radius);
+    this.blurInner.setKernelSize(radius);
   }
   setRadiusOuter(radius: [number, number, number]) {
-    this.blurOuter.setSize(radius);
+    this.blurOuter.setKernelSize(radius);
   }
-  */
   setStrength(strength: number) {
     this.add1.coef = [1, strength];
   }
