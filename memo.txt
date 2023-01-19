@@ -53,10 +53,17 @@ Effects
     radial filter
   radial edge
     radial filter (正規分布の微分)
+  //
+  tone curve
+    RGB, HSV
+    spline curve があると便利か
   radial color grading
-    contrast
-    tint, luminous, saturation
-    hue (rainbow)
+    contrast, 色相
+      S字トーンカーブの急峻さをrで変更
+    rainbow
+      色相S字トーンカーブの原点をrで移動
+  radial系の、angleによるノイズ
+    (0..N).map(|n| (n*angle).sin()).sum()
   グリッチ
     https://github.com/syuilo/glitch-studio
     トーンカーブ

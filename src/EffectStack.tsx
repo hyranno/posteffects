@@ -4,6 +4,7 @@ import type {Component} from 'solid-js';
 import * as glutil from 'glutil';
 import {BundledEffects} from 'effects/bundle';
 import {Nop} from 'stackitems/Nop';
+import {ToneCurveRGB} from 'stackitems/ToneCurveRGB';
 import {Dither} from 'stackitems/Dither';
 import {HalfTone} from 'stackitems/Halftone';
 import {Bloom} from 'stackitems/Bloom';
@@ -81,6 +82,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
     let remover = (e: EffectItem) => {this.remove(e)};
     let options = new Map<string, ()=>EffectItem>([
       ["Nop", () => new Nop(this.context, this.resolution, remover)],
+      ["ToneCurve(RGB)", () => new ToneCurveRGB(this.context, this.resolution, remover)],
       ["Dither", () => new Dither(this.context, this.resolution, remover)],
       ["HalfTone", () => new HalfTone(this.context, this.resolution, remover)],
       ["Bloom", () => new Bloom(this.context, this.resolution, remover)],

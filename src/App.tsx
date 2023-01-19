@@ -11,11 +11,11 @@ const App: Component<{}> = (_) => {
 
   const srcImage = document.createElement("video")!;
   srcImage.setAttribute("controls", "true");
-  setTimeout(() => { // srcImage.onloadeddata
+  srcImage.onloadeddata = () => { // srcImage.onloadeddata
     srcImage.width = srcImage.videoWidth;
     srcImage.height = srcImage.videoHeight;
     setVisibile(true);
-  }, 1000);
+  };
   setInterval( // srcImage.ontimeupdate
     () => setFrame(frame()+1),
     1000/30
