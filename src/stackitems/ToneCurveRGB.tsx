@@ -2,6 +2,7 @@ import {createSignal, createEffect, Show, For} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
+import {spline3} from 'util';
 import {SignalingInputVec, SignalingInputFloat} from 'UtilComponents';
 import {EffectItem} from 'EffectStack';
 import {ToneCurveRGBShader} from 'effects/ToneCurveRGB';
@@ -18,19 +19,14 @@ export class ToneCurveRGB implements EffectItem {
     this.effect = new ToneCurveRGBShader(context, dummy, null, resolution, [
       [0, 0, 0],
       [1, 1, 1],
-      [-1.7, -1.7, -1.7],
-      [1.68, 1.68, 1.68]
+      [0, 0, 0],
+      [0, 0, 0]
     ]);
     this.remover = remover;
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
-    let initialPoly = [
-      [0, 0, 0],
-      [1, 1, 1],
-      [-1.7, -1.7, -1.7],
-      [1.68, 1.68, 1.68]
-    ];
+    let initialPoly = spline3([[0,0], [0.3, 0.2], [0.7, 0.8], [1,1]]).map(v => [v,v,v]);
     let poly = initialPoly.map(
       v => new SignalingInputVec(v as [number, number, number], SignalingInputFloat)
     );
