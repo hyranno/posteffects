@@ -16,24 +16,19 @@ export class RadialWarp implements EffectItem {
   ) {
     let dummy = glutil.createBufferTexture(context, resolution);
     this.effect = new RadialWarpShader(context, dummy, null, resolution,
-      50, [-1, -0.3, -0.001, 0]
+      [0, 1, -0.001, 0]
     );
     this.remover = remover;
   }
   ui: Component<{}> = () => {
     let [visible, setVisibile] = createSignal(false);
-    let initialPoly = [-1, -0.3, -0.001, 0] as [number, number, number, number];
-    let minRadius = new SignalingInputFloat(100);
-    createEffect(()=>this.effect.min_radius = minRadius.accessor());
+    let initialPoly = [0, 1, -0.001, 0] as [number, number, number, number];
     let poly = new SignalingInputVec(initialPoly, SignalingInputFloat);
     createEffect(()=>this.effect.poly = poly.accessor());
     return <div>
       <a onClick={_ => setVisibile(!visible())}> RadialWarp </a>
       <Show when={visible()}>
-        <label> min radius
-          <minRadius.inputs />
-        </label>
-        <label> polynomial curve of delta
+        <label> polynomial curve
           <poly.inputs />
         </label>
         <a onClick={_ => this.remover(this)}>remove</a>
