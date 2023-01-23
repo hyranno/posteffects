@@ -56,7 +56,6 @@ Effects
   radial color grading
     hsl
       S字トーンカーブの急峻さをrで変更
-      mod(hue - hue_target) をpolyに入れて + hue_target
     rainbow
       色相S字トーンカーブの原点をrで移動
   radial warp

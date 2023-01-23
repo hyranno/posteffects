@@ -6,6 +6,7 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
   dest: WebGLFramebuffer | null;
   resolution: [number, number];
   min_radius: number;
+  hue_target: number;
   poly_strength: [
     [number, number, number],
     [number, number, number],
@@ -18,6 +19,7 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
     dest: WebGLFramebuffer | null,
     resolution: [number, number],
     min_radius: number,
+    hue_target: number,
     poly_strength: [
       [number, number, number],
       [number, number, number],
@@ -30,6 +32,7 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
       uniform vec2 resolution;
       uniform sampler2D src;
       uniform float minRadius;
+      uniform float hue_target;
       uniform vec3[4] poly_strength;
       out vec4 outColor;
 
@@ -130,10 +133,10 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
           }
         }
 
-        vec3 cc = clamp(
-          poly[0] + c*(poly[1] + c*(poly[2] + c*(poly[3]))),
-          vec3(0.0), vec3(1.0)
-        );
+        c.x = mod(c.x - hue_target, 1.0);
+        vec3 cc = poly[0] + c*(poly[1] + c*(poly[2] + c*(poly[3])));
+        cc = clamp(cc, vec3(0.0), vec3(1.0));
+        cc.x = mod(cc.x + hue_target, 1.0);
         outColor = vec4(rgb_from_hsl(cc), 1.0);
       }
     `;
@@ -142,6 +145,7 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
     this.dest = dest;
     this.resolution = resolution;
     this.min_radius = min_radius;
+    this.hue_target = hue_target;
     this.poly_strength = poly_strength;
   }
 
@@ -155,6 +159,7 @@ export class RadialToneCurveHSLShader extends glutil.PostEffectShader {
     this.context.bindTexture(gl.TEXTURE_2D, this.src);
     this.context.uniform1i(this.context.getUniformLocation(this.program, "src"), 0);
     this.context.uniform1f(this.context.getUniformLocation(this.program, "minRadius"), this.min_radius);
+    this.context.uniform1f(this.context.getUniformLocation(this.program, "hue_target"), this.hue_target);
     this.poly_strength.forEach((v, i) => {
       this.context.uniform3fv(this.context.getUniformLocation(this.program, `poly_strength[${i}]`), v);
     });

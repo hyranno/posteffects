@@ -2,7 +2,6 @@ import {createSignal, createEffect, Show, For} from 'solid-js';
 import type {Component} from 'solid-js';
 
 import * as glutil from 'glutil';
-import {spline3} from 'util';
 import {SignalingInputVec, SignalingInputFloat} from 'UtilComponents';
 import {EffectItem} from 'EffectStack';
 import {RadialToneCurveHSLShader} from 'effects/RadialToneCurveHSL';
@@ -17,7 +16,7 @@ export class RadialToneCurveHSL implements EffectItem {
   ) {
     let dummy = glutil.createBufferTexture(context, resolution);
     this.effect = new RadialToneCurveHSLShader(context, dummy, null, resolution,
-      100,
+      100, 0,
       [
         [0, 0, 0],
         [1, 1, 1],
@@ -32,6 +31,8 @@ export class RadialToneCurveHSL implements EffectItem {
     let initialPoly = [0, 0.002, 0, 0].map(v => [v,v,v]);
     let minRadius = new SignalingInputFloat(100);
     createEffect(()=>this.effect.min_radius = minRadius.accessor());
+    let hueTarget = new SignalingInputFloat(0);
+    createEffect(()=>this.effect.hue_target = hueTarget.accessor());
     let poly = initialPoly.map(
       v => new SignalingInputVec(v as [number, number, number], SignalingInputFloat)
     );
@@ -41,6 +42,9 @@ export class RadialToneCurveHSL implements EffectItem {
       <Show when={visible()}>
         <label> min radius
           <minRadius.inputs />
+        </label>
+        <label> hue target
+          <hueTarget.inputs />
         </label>
         <label> polynomial curve of strength
           <For each={poly}>
