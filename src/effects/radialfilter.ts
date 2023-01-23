@@ -29,7 +29,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
       uniform int numSample;
       out vec4 outColor;
       vec3 sampleKernel(float x) {
-        float i = clamp(0.0, float(kernelLength-1), x * float(kernelLength-1));
+        float i = clamp(x * float(kernelLength-1), 0.0, float(kernelLength-1));
         return mix( kernel[int(floor(i))], kernel[int(ceil(i))], fract(i) );
       }
 

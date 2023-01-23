@@ -61,8 +61,8 @@ export class ToneCurveHSLShader extends glutil.PostEffectShader {
         const float pi = radians(180.0);
         const vec3 a = 2.0*pi * vec3(0, 1, 2)/3.0;
         vec3 ratio = vec3(1.0) - clamp(
-          vec3(0.0), vec3(1.0),
-          abs(balance_radian(vec3(hsl.x * 2.0*pi) - a)) / (pi/3.0) - vec3(1.0)
+          abs(balance_radian(vec3(hsl.x * 2.0*pi) - a)) / (pi/3.0) - vec3(1.0),
+          vec3(0.0), vec3(1.0)
         );
         float cmax = hsl.z + hsl.y / 2.0 * (1.0 - abs(2.0 * hsl.z - 1.0));
         float cmin = hsl.z - hsl.y / 2.0 * (1.0 - abs(2.0 * hsl.z - 1.0));
