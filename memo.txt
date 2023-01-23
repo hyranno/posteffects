@@ -21,9 +21,7 @@ TypeScript + SolidJS + WebGL
       <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
-SignalingForm
-  getter, setter
-  int, float, vec2, vec3, vec4, ivec3,
+clampの引数順の修正
 filter1d, blur は ...vec3 で代用できるので消したい
 StackedEffectはbloomとかにも使えそう
 
@@ -56,9 +54,8 @@ Effects
   tone curve
     RGB, HSV
   //
-  spline curve があると便利か
   radial color grading
-    contrast, 色相
+    hsl
       S字トーンカーブの急峻さをrで変更
     rainbow
       色相S字トーンカーブの原点をrで移動
