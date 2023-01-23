@@ -52,15 +52,13 @@ Effects
     radial filter (正規分布の微分)
   tone curve
     RGB, HSV
-  //
   radial color grading
     hsl
       S字トーンカーブの急峻さをrで変更
     rainbow
       色相S字トーンカーブの原点をrで移動
+  //
   radial warp
-  radial系の、angleによるノイズ
-    (0..N).map(|n| (n*angle).sin()).sum()
   グリッチ
     https://github.com/syuilo/glitch-studio
     トーンカーブ
@@ -69,6 +67,8 @@ Effects
     adaptive threshold
     モザイク
     歪み
+  radial系の、angleによるノイズ
+    (0..N).map(|n| (n*angle).sin()).sum()
   wavelet変換
   不可逆圧縮, 解凍
     wavelet変換後、対数で量子化
