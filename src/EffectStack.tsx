@@ -19,6 +19,7 @@ import {RadialEdge} from 'stackitems/RadialEdge';
 import {RadialToneCurveHSL} from 'stackitems/RadialToneCurveHSL';
 import {RadialRainbow} from 'stackitems/RadialRainbow';
 import {RadialWarp} from 'stackitems/RadialWarp';
+import {Translate} from 'stackitems/Displacement/Translate';
 
 import styles from './EffectStack.module.css';
 
@@ -101,6 +102,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["RadialToneCurve(HSL)", () => new RadialToneCurveHSL(this.context, this.resolution, remover)],
       ["RadialRainbow", () => new RadialRainbow(this.context, this.resolution, remover)],
       ["RadialWarp", () => new RadialWarp(this.context, this.resolution, remover)],
+      ["Translate", () => new Translate(this.context, this.resolution, remover)],
     ]);
     let [selected, setSelected] = createSignal(options.keys().next().value);
     return <div class={styles.EffectStack}>

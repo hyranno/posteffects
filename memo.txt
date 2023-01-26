@@ -22,6 +22,7 @@ TypeScript + SolidJS + WebGL
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
 filter1d, blur は ...vec3 で代用できるので消したい
+RadialWarpもdisplacementでは
 StackedEffectはbloomとかにも使えそう
 
 
@@ -33,42 +34,50 @@ Effects
     ハーフトーン
     ディザ減色
   Blur
-    filter1d(filter1d(src))
   Bloom
-    add(src, add(filter1d(filter1d(knee(src))), -(kernel_center^2)*knee(src)))
-    knee curve https://light11.hatenadiary.com/entry/2018/02/15/011155
   Glare
-    add(src, rotated_filter1d(knee(src)), rotated_filter1d(knee(src)), ...)
   Halo
-    add(src, large_bloom(src), -small_bloom(src))
   モーションブラー
   光の軌跡
-    knee + motion blur
   radial filter
-    外へ行くほどkernelを大きくしたい
   radial blur
-    radial filter
   radial edge
-    radial filter (正規分布の微分)
   tone curve
-    RGB, HSV
   radial color grading
     hsl
-      S字トーンカーブの急峻さをrで変更
     rainbow
-      色相S字トーンカーブの原点をrで移動
-  //
   radial warp
+  //
   グリッチ
     https://github.com/syuilo/glitch-studio
-    トーンカーブ
-    色調遷移
-    translate
-    adaptive threshold
+    displacement map
+      Translate
+        画面全体を移動
+      //
+      ブロック状
+        座標を粗く再量子化して乱数の種にする
+      数行ごと
+        ブロックでのx座標量子化幅無限
+      行単位の歪み
+        y座標の関数(乱数ではない)
+      ティアリング
+        step(y軸)でx軸方向にずらす
+        時間で上下に流れるとよい
+        本来は線の上下でフレームが異なるやつ
+    ノイズの乗算, 加算
+    y座標トーンカーブ
+    スタッタリング
+      一定確率でひとつ前のフレームを表示
     モザイク
-    歪み
+      ある範囲の平均
+      ……は重いのでタイル内の1点を指すdisplacement?
+    ピクセルソート
+      ある範囲でpixelを画素値でソート
+      ……は重いので疑似的な方法を取ったほうがよさそう
+  adaptive ToneCurve(threshold)
   radial系の、angleによるノイズ
     (0..N).map(|n| (n*angle).sin()).sum()
+  各種フィルタのパラメータに対する時間方向ノイズ
   wavelet変換
   不可逆圧縮, 解凍
     wavelet変換後、対数で量子化
@@ -80,5 +89,5 @@ Effects
       元画像に収束する
       計算量が小さい(リソース、レイテンシでの有利)
   水の表現
-    角度が小さい -> 透明度が低い, 波が小さい
+    角度が小さい -> 透明度が低い(フレネルの公式), 波が小さい
     角度が大きい -> 透明度が高い, 波が大きい
