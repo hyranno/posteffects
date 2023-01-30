@@ -26,9 +26,8 @@ class MapShader extends glutil.PostEffectShader {
       uniform vec2 salts;
       out vec4 outColor;
       float hash(vec2 p, float salt) {
-        return fract(4643.4649 * cos(
-          salt + p.x + p.y * 893.109
-        ));
+        float phase = 321.47 * salt + mod(dot(p, vec2(564.459, 893.109)), 951.54);
+        return fract(4643.4649 * cos(phase));
       }
       vec2 box_mullar(vec2 r) {
         float amp = sqrt(-2.0*log(max(0.00001, r.x)));
