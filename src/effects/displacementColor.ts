@@ -66,9 +66,10 @@ export class DisplacementColorShader extends glutil.PostEffectShader {
 
     /* unbind */
     this.context.bindBuffer(gl.ARRAY_BUFFER, null);
-    this.context.bindTexture(gl.TEXTURE_2D, null);
-    this.context.activeTexture(gl.TEXTURE0);
-    this.context.bindTexture(gl.TEXTURE_2D, null);
+    [gl.TEXTURE1, gl.TEXTURE2, gl.TEXTURE3, gl.TEXTURE0].forEach(t => {
+      this.context.activeTexture(t);
+      this.context.bindTexture(gl.TEXTURE_2D, null);
+    });
   }
 
 }

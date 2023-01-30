@@ -80,9 +80,10 @@ export class TranslateColorEffect extends DisplacementColorEffect {
     let mapTexture = translate.map(
       _ => glutil.createBufferTexture(context, resolution)
     ) as [WebGLTexture, WebGLTexture, WebGLTexture];
-    let map = translate.map((t, i) => new MapShader(
-      context, glutil.bindNewFramebuffer(context, mapTexture[i]), resolution, t)
-    ) as [MapShader, MapShader, MapShader];
+    let map = mapTexture.map((tex, i) => new MapShader(
+      context, glutil.bindNewFramebuffer(context, tex), resolution,
+      translate[i]
+    )) as [MapShader, MapShader, MapShader];
     super(context, src, dest, resolution, mapTexture, new BundledEffects(context, map));
     this.map = map;
   }
