@@ -23,7 +23,8 @@ TypeScript + SolidJS + WebGL
 
 filter1d, blur は ...vec3 で代用できるので消したい
 RadialWarpもdisplacementでは
-StackedEffectはbloomとかにも使えそう
+エッジ検出はgaussianDerivativeより中央が急峻な方がいいのでは
+  gaussianを正負反転させる
 
 
 Effects

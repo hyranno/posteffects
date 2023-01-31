@@ -1,5 +1,5 @@
 import * as glutil from 'glutil';
- import {gaussianDerivativeKernel} from 'util';
+ import {gaussianOddifiedKernel} from 'util';
 
 import {AddShader} from 'effects/add';
 import {RadialFilterShader} from 'effects/radialfilter';
@@ -22,7 +22,7 @@ export class RadialEdgeEffect extends glutil.GlEffect {
     let filteredTexture = glutil.createBufferTexture(context, resolution);
     let filteredBuffer = glutil.bindNewFramebuffer(context, filteredTexture);
 
-    let kernel = gaussianDerivativeKernel(size);
+    let kernel = gaussianOddifiedKernel(size);
     this.filter = new RadialFilterShader(
       context, src, filteredBuffer, resolution,
       min_radius, kernel, poly_kernel_size, num_sample, 0.5
@@ -45,7 +45,7 @@ export class RadialEdgeEffect extends glutil.GlEffect {
     this.filter.min_radius = r;
   }
   setSize(size: [number, number, number]): void {
-    let kernel = gaussianDerivativeKernel(size);
+    let kernel = gaussianOddifiedKernel(size);
     this.filter.kernel = kernel;
   }
   setPolyKernelSize(poly: [number, number, number, number]): void {

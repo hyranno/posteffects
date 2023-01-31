@@ -22,6 +22,11 @@ export function gaussianKernelVec3(size: [number, number, number]): [number, num
   return weights.map(vec => vec.map((v, j) => v / denominator[j])) as [number, number, number][];
 }
 
+export function gaussianOddifiedKernel(size: [number, number, number]): [number, number, number][] {
+  let kernel = gaussianKernelVec3(size);
+  return kernel.map((e,i) => e.map(v => v * Math.sign(i-kernel.length/2)) as [number, number, number]);
+}
+
 export function gaussianDerivativeKernel(size: [number, number, number]): [number, number, number][] {
   let length = Math.max(...size);
   let half = (length - 1) / 2;
