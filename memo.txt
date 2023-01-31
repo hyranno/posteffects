@@ -68,9 +68,9 @@ Effects
     ノイズの乗算, 加算
     y座標トーンカーブ(保留)
       radialと大差ないし後でいいか
-    //
     スタッタリング
       一定確率でひとつ前のフレームを表示
+    //
     モザイク
       ある範囲の平均
       ……は重いので
@@ -80,11 +80,15 @@ Effects
       ある範囲でpixelを画素値でソート
       ……は重いので疑似的な方法を取ったほうがよさそう
   Edge
-    filter1d
+    filter1d * 縦横斜めの4方向
   ToneCurveStairs
     smoothstepの階段みたいなトーンカーブ
     ToonLike
   adaptive ToneCurve(threshold)
+    mean, variance
+    smoothstep
+
+今はやらない
   radial系の、angleによるノイズ
     (0..N).map(|n| (n*angle).sin()).sum()
   各種フィルタのパラメータに対する時間方向ノイズ

@@ -22,6 +22,7 @@ import {RadialWarp} from 'stackitems/RadialWarp';
 import {Translate} from 'stackitems/Displacement/Translate';
 import {TiledRandom} from 'stackitems/Displacement/TiledRandom';
 import {GaussianNoise} from 'stackitems/GaussianNoise';
+import {Stuttering} from 'stackitems/Stuttering';
 
 import styles from './EffectStack.module.css';
 
@@ -107,6 +108,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["Translate", () => new Translate(this.context, this.resolution, remover)],
       ["TiledRandom", () => new TiledRandom(this.context, this.resolution, remover)],
       ["GaussianNoise", () => new GaussianNoise(this.context, this.resolution, remover)],
+      ["Stuttering", () => new Stuttering(this.context, this.resolution, remover)],
     ]);
     let [selected, setSelected] = createSignal(options.keys().next().value);
     return <div class={styles.EffectStack}>

@@ -16,6 +16,7 @@
     "vite-tsconfig-paths": "^3.6.0"
   },
   "dependencies": {
+    "reliable-random": "^0.0.1",
     "solid-js": "^1.5.1"
   }
 }
