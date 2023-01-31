@@ -25,9 +25,9 @@ export class RadialEdgeEffect extends glutil.GlEffect {
     let kernel = gaussianDerivativeKernel(size);
     this.filter = new RadialFilterShader(
       context, src, filteredBuffer, resolution,
-      min_radius, kernel, poly_kernel_size, num_sample
+      min_radius, kernel, poly_kernel_size, num_sample, 0.5
     );
-    this.add = new AddShader(context, src, filteredTexture, dest, resolution, [1, strength]);
+    this.add = new AddShader(context, src, filteredTexture, dest, resolution, [1, strength], [0, -0.5]);
   }
 
   override update(){

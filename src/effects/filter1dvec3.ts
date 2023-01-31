@@ -6,6 +6,7 @@ export class Filter1dVec3Shader extends glutil.PostEffectShader {
   resolution: [number, number];
   kernel: [number, number, number][];
   direction: [number, number];
+  bias: number;
   constructor(
     context: WebGL2RenderingContext,
     src: WebGLTexture,
@@ -13,6 +14,7 @@ export class Filter1dVec3Shader extends glutil.PostEffectShader {
     resolution: [number, number],
     kernel: [number, number, number][],
     direction: [number, number],
+    bias: number = 0,
   ) {
     const fs = `#version 300 es
       precision mediump float;
@@ -21,9 +23,10 @@ export class Filter1dVec3Shader extends glutil.PostEffectShader {
       uniform int kernelSize;
       uniform vec3[256] kernel;
       uniform vec2 direction;
+      uniform float bias;
       out vec4 outColor;
       void main(){
-        vec3 res = vec3(0);
+        vec3 res = vec3(bias);
         for (int i=0; i<kernelSize; i++) {
           vec2 uv = (gl_FragCoord.xy + (float(i) - float(kernelSize)/2.0) * direction) / resolution;
           res += kernel[i] * texture(src, uv).xyz;
@@ -37,6 +40,7 @@ export class Filter1dVec3Shader extends glutil.PostEffectShader {
     this.resolution = resolution;
     this.kernel = kernel;
     this.direction = direction;
+    this.bias = bias;
   }
 
   override update() {
@@ -55,6 +59,7 @@ export class Filter1dVec3Shader extends glutil.PostEffectShader {
     this.context.uniform2fv(
       this.context.getUniformLocation(this.program, "direction"), new Float32Array(this.direction)
     );
+    this.context.uniform1f(this.context.getUniformLocation(this.program, "bias"), this.bias);
 
     this.context.bindFramebuffer(gl.FRAMEBUFFER, this.dest);
     this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);

@@ -8,6 +8,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
   kernel: [number, number, number][];
   poly_kernel_size: [number, number, number, number];  // kernel_size = poly_kernel_size( max(0, (radius - min_radius)) )
   num_sample: number;
+  bias: number;
   constructor(
     context: WebGL2RenderingContext,
     src: WebGLTexture,
@@ -17,6 +18,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
     kernel: [number, number, number][],
     poly_kernel_size: [number, number, number, number],
     num_sample: number,
+    bias: number = 0,
   ) {
     const fs = `#version 300 es
       precision mediump float;
@@ -27,6 +29,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
       uniform vec3[256] kernel;
       uniform vec4 polyKernelSize;
       uniform int numSample;
+      uniform float bias;
       out vec4 outColor;
       vec3 sampleKernel(float x) {
         float i = clamp(x * float(kernelLength-1), 0.0, float(kernelLength-1));
@@ -49,6 +52,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
           res += sampleKernel(x) * texture(src, uv).xyz;
         }
         res /= float(numSample) / float(kernelLength);
+        res += vec3(bias);
         outColor = vec4(res, 1);
       }
     `;
@@ -60,6 +64,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
     this.kernel = kernel;
     this.poly_kernel_size = poly_kernel_size;
     this.num_sample = num_sample;
+    this.bias = bias;
   }
 
   override update() {
@@ -80,6 +85,7 @@ export class RadialFilterShader extends glutil.PostEffectShader {
       this.context.getUniformLocation(this.program, "polyKernelSize"), new Float32Array(this.poly_kernel_size)
     );
     this.context.uniform1i(this.context.getUniformLocation(this.program, "numSample"), this.num_sample);
+    this.context.uniform1f(this.context.getUniformLocation(this.program, "bias"), this.bias);
 
     this.context.bindFramebuffer(gl.FRAMEBUFFER, this.dest);
     this.context.drawArrays(this.context.TRIANGLE_FAN, 0, 4);
