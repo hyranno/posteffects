@@ -10,6 +10,7 @@ import {Dither} from 'stackitems/Dither';
 import {HalfTone} from 'stackitems/Halftone';
 import {Bloom} from 'stackitems/Bloom';
 import {Blur} from 'stackitems/Blur';
+import {Edge} from 'stackitems/Edge';
 import {Mosaic} from 'stackitems/Mosaic';
 import {Glare} from 'stackitems/Glare';
 import {Halo} from 'stackitems/Halo';
@@ -97,6 +98,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["HalfTone", () => new HalfTone(this.context, this.resolution, remover)],
       ["Bloom", () => new Bloom(this.context, this.resolution, remover)],
       ["Blur", () => new Blur(this.context, this.resolution, remover)],
+      ["Edge", () => new Edge(this.context, this.resolution, remover)],
       ["Mosaic (Monte Carlo)", () => new Mosaic(this.context, this.resolution, remover)],
       ["Glare", () => new Glare(this.context, this.resolution, remover)],
       ["Halo", () => new Halo(this.context, this.resolution, remover)],

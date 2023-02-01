@@ -21,6 +21,7 @@ TypeScript + SolidJS + WebGL
       <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
+Stuttering, 単にnopをupdateしないだけでもいいのでは
 filter1d, blur は ...vec3 で代用できるので消したい
 RadialWarpもdisplacementでは
 
@@ -76,9 +77,9 @@ Effects
     ピクセルソート(保留)
       ある範囲でpixelを画素値でソート
       ……は重いので疑似的な方法を取ったほうがよさそう
-  //
   Edge
     filter1d * 縦横斜めの4方向
+  //
   ToneCurveStairs
     smoothstepの階段みたいなトーンカーブ
     ToonLike

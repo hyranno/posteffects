@@ -45,7 +45,8 @@ export function gaussianDerivativeKernel(size: [number, number, number]): [numbe
       return -x / (s*s) * Math.exp(-x*x / (2*s*s));
     })
   );
-  return weights as [number, number, number][];
+  const mean = weights.reduce((prev, curr) => prev.map((v, i) => v + curr[i]), [0, 0, 0]).map(v => v/length);
+  return weights.map(vec => vec.map((v, j) => v - mean[j])) as [number, number, number][];
 }
 
 // derivative of derivative of gaussianKernel
@@ -61,7 +62,8 @@ export function laplacianKernel(size: [number, number, number]): [number, number
       return -(x-s)*(x+s) / (s*s)*(s*s) * Math.exp(-x*x / (2*s*s));
     })
   );
-  return weights as [number, number, number][];
+  const mean = weights.reduce((prev, curr) => prev.map((v, i) => v + curr[i]), [0, 0, 0]).map(v => v/length);
+  return weights.map(vec => vec.map((v, j) => v - mean[j])) as [number, number, number][];
 }
 
 
