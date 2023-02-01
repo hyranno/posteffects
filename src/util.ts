@@ -2,7 +2,10 @@
 export function gaussianKernel(size: number): number[] {
   const sigma = size / (2 * 3);
   const half = (size - 1) / 2;
-  const weights: number[] = Array.from(Array(size), (_, i) => Math.exp(-(i - half)*(i - half) / (2*sigma*sigma)));
+  const weights: number[] = Array.from(Array(size), (_, i) => {
+    let x = i-half;
+    return Math.exp(-x*x / (2*sigma*sigma));
+  });
   const denominator = weights.reduce((prev, curr) => prev+curr, 0);  // calc sum, not analytic integration, for approx error
   return weights.map((v) => v/denominator);
 }
@@ -13,9 +16,11 @@ export function gaussianKernelVec3(size: [number, number, number]): [number, num
   let sigma = size.map(v => v / (2 * 3));
   let weights = Array.from(
     Array(length),
-    (_, i) => size.map((_, j) =>
-      Math.exp(-(i - half)*(i - half) / (2*sigma[j]*sigma[j]))
-    )
+    (_, i) => size.map((_, j) => {
+      let x = i-half;
+      let s = sigma[j];
+      return Math.exp(-x*x / (2*s*s));
+    })
   );
   /* calc sum, not analytic integration, for approx error */
   const denominator = weights.reduce((prev, curr) => prev.map((v, i) => v + curr[i]), [0, 0, 0]);
@@ -24,7 +29,8 @@ export function gaussianKernelVec3(size: [number, number, number]): [number, num
 
 export function gaussianOddifiedKernel(size: [number, number, number]): [number, number, number][] {
   let kernel = gaussianKernelVec3(size);
-  return kernel.map((e,i) => e.map(v => v * Math.sign(i-kernel.length/2)) as [number, number, number]);
+  let max = Math.max(...kernel.flat());
+  return kernel.map((e,i) => e.map(v => v/max * Math.sign(i-(kernel.length-1)/2)) as [number, number, number]);
 }
 
 export function gaussianDerivativeKernel(size: [number, number, number]): [number, number, number][] {
@@ -33,12 +39,31 @@ export function gaussianDerivativeKernel(size: [number, number, number]): [numbe
   let sigma = size.map(v => v / (2 * 3));
   let weights = Array.from(
     Array(length),
-    (_, i) => size.map((_, j) =>
-      -(i-half) / (sigma[j]*sigma[j]) * Math.exp(-(i-half)*(i-half) / (2*sigma[j]*sigma[j]))
-    )
+    (_, i) => size.map((_, j) => {
+      let x = i-half;
+      let s = sigma[j];
+      return -x / (s*s) * Math.exp(-x*x / (2*s*s));
+    })
   );
   return weights as [number, number, number][];
 }
+
+// derivative of derivative of gaussianKernel
+export function laplacianKernel(size: [number, number, number]): [number, number, number][] {
+  let length = Math.max(...size);
+  let half = (length - 1) / 2;
+  let sigma = size.map(v => v / (2 * 3));
+  let weights = Array.from(
+    Array(length),
+    (_, i) => size.map((_, j) => {
+      let x = i-half;
+      let s = sigma[j];
+      return -(x-s)*(x+s) / (s*s)*(s*s) * Math.exp(-x*x / (2*s*s));
+    })
+  );
+  return weights as [number, number, number][];
+}
+
 
 export function smoothstep(edge0: number, edge1: number, x: number): number {
   let t = Math.min(1.0, Math.max(0.0, (x-edge0) / (edge1 - edge0)));

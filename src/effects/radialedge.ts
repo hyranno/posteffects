@@ -1,12 +1,12 @@
 import * as glutil from 'glutil';
- import {gaussianOddifiedKernel} from 'util';
+ import {laplacianKernel} from 'util';
 
-import {AddShader} from 'effects/add';
+import {RadialAddShader} from 'effects/radialadd';
 import {RadialFilterShader} from 'effects/radialfilter';
 
 export class RadialEdgeEffect extends glutil.GlEffect {
   filter: RadialFilterShader;
-  add: AddShader;
+  add: RadialAddShader;
   constructor(
     context: WebGL2RenderingContext,
     src: WebGLTexture,
@@ -14,20 +14,22 @@ export class RadialEdgeEffect extends glutil.GlEffect {
     resolution: [number, number],
     min_radius: number,
     size: [number, number, number],
-    poly_kernel_size: [number, number, number, number],
-    strength: number,
+    poly_strength: [number, number, number, number],
     num_sample: number,
   ) {
     super(context);
     let filteredTexture = glutil.createBufferTexture(context, resolution);
     let filteredBuffer = glutil.bindNewFramebuffer(context, filteredTexture);
 
-    let kernel = gaussianOddifiedKernel(size);
+    let poly_kernel_size = [Math.max(...size), 0, 0, 0] as [number, number, number, number];
+    let kernel = laplacianKernel(size);
     this.filter = new RadialFilterShader(
       context, src, filteredBuffer, resolution,
       min_radius, kernel, poly_kernel_size, num_sample, 0.5
     );
-    this.add = new AddShader(context, src, filteredTexture, dest, resolution, [1, strength], [0, -0.5]);
+    this.add = new RadialAddShader(
+      context, src, filteredTexture, dest, resolution,
+      200, [1, 0,0,0], poly_strength, [0, -0.5]);
   }
 
   override update(){
@@ -43,16 +45,15 @@ export class RadialEdgeEffect extends glutil.GlEffect {
   }
   setMinRadius(r: number): void {
     this.filter.min_radius = r;
+    this.add.min_radius = r;
   }
   setSize(size: [number, number, number]): void {
-    let kernel = gaussianOddifiedKernel(size);
+    let kernel = laplacianKernel(size);
     this.filter.kernel = kernel;
+    this.filter.poly_kernel_size = [Math.max(...size), 0, 0, 0] as [number, number, number, number];
   }
-  setPolyKernelSize(poly: [number, number, number, number]): void {
-    this.filter.poly_kernel_size = poly;
-  }
-  setStrength(v: number): void {
-    this.add.coef = [1, v];
+  setPolyStrength(v: [number, number, number, number]): void {
+    this.add.poly_coef1 = v;
   }
   setNumSample(n: number): void {
     this.filter.num_sample = n;

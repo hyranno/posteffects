@@ -17,7 +17,7 @@ export class RadialEdge implements EffectItem {
     let dummy = glutil.createBufferTexture(context, resolution);
     this.effect = new RadialEdgeEffect(
       context, dummy, null, resolution,
-       200, [21, 21, 21], [0.4, 0.1, 0, 0], 4, 11
+       200, [5, 5, 5], [0.4, 0.1, 0, 0], 5
     );
     this.remover = remover;
   }
@@ -25,12 +25,14 @@ export class RadialEdge implements EffectItem {
     let [visible, setVisibile] = createSignal(false);
     let minRadius = new SignalingInputFloat(200);
     createEffect(()=>this.effect.setMinRadius(minRadius.accessor()));
+    let kernelSize = new SignalingInputInt(5);
+    createEffect(()=>{
+      let v = kernelSize.accessor();
+      this.effect.setSize([v,v,v]);
+      this.effect.setNumSample(v);
+    });
     let poly = new SignalingInputVec([0.4, 0.1, 0, 0] as [number, number, number, number], SignalingInputFloat);
-    createEffect(()=>this.effect.setPolyKernelSize(poly.accessor()));
-    let strength = new SignalingInputFloat(4);
-    createEffect(()=>this.effect.setStrength(strength.accessor()));
-    let numSample = new SignalingInputInt(11);
-    createEffect(()=>this.effect.setNumSample(numSample.accessor()));
+    createEffect(()=>this.effect.setPolyStrength(poly.accessor()));
 
     return <div>
       <a onClick={_ => setVisibile(!visible())}> RadialEdge </a>
@@ -38,14 +40,11 @@ export class RadialEdge implements EffectItem {
         <label> min radius
           <minRadius.inputs />
         </label>
-        <label> polynomial of kernel size
+        <label> kernel size
+          <kernelSize.inputs />
+        </label>
+        <label> polynomial of strength
           <poly.inputs />
-        </label>
-        <label> strength
-          <strength.inputs />
-        </label>
-        <label> number of samples
-          <numSample.inputs />
         </label>
         <a onClick={_ => this.remover(this)}>remove</a>
       </Show>

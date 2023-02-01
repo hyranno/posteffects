@@ -23,8 +23,6 @@ TypeScript + SolidJS + WebGL
 
 filter1d, blur は ...vec3 で代用できるので消したい
 RadialWarpもdisplacementでは
-エッジ検出はgaussianDerivativeより中央が急峻な方がいいのでは
-  gaussianを正負反転させる
 
 
 Effects
@@ -48,7 +46,6 @@ Effects
     hsl
     rainbow
   radial warp
-  //
   グリッチ
     https://github.com/syuilo/glitch-studio
     displacement map
