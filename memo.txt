@@ -21,7 +21,6 @@ TypeScript + SolidJS + WebGL
       <HTMLMediaElement>.srcObject=stream
     https://developer.mozilla.org/ja/docs/Web/Guide/Audio_and_video_delivery
 
-Stuttering, 単にnopをupdateしないだけでもいいのでは
 filter1d, blur は ...vec3 で代用できるので消したい
 RadialWarpもdisplacementでは
 
