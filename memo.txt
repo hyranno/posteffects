@@ -87,7 +87,6 @@ Effects
 
 今はやらない
   radial系の、angleによるノイズ
-    (0..N).map(|n| (n*angle).sin()).sum()
   各種フィルタのパラメータに対する時間方向ノイズ
   wavelet変換
   不可逆圧縮, 解凍
