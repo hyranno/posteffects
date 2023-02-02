@@ -7,6 +7,7 @@ import {Nop} from 'stackitems/Nop';
 import {ToneCurveRGB} from 'stackitems/ToneCurveRGB';
 import {ToneCurveHSL} from 'stackitems/ToneCurveHSL';
 import {ToneCurveStairsHSL} from 'stackitems/ToneCurveStairsHSL';
+import {ToneCurveAdaptive} from 'stackitems/ToneCurveAdaptiveHSL';
 import {Dither} from 'stackitems/Dither';
 import {HalfTone} from 'stackitems/Halftone';
 import {Bloom} from 'stackitems/Bloom';
@@ -96,6 +97,7 @@ export class EffectStack extends glutil.GlEffect implements EffectItem {
       ["ToneCurve(RGB)", () => new ToneCurveRGB(this.context, this.resolution, remover)],
       ["ToneCurve(HSL)", () => new ToneCurveHSL(this.context, this.resolution, remover)],
       ["ToneCurveStairs(HSL)", () => new ToneCurveStairsHSL(this.context, this.resolution, remover)],
+      ["ToneCurveAdaptive(HSL)", () => new ToneCurveAdaptive(this.context, this.resolution, remover)],
       ["Dither", () => new Dither(this.context, this.resolution, remover)],
       ["HalfTone", () => new HalfTone(this.context, this.resolution, remover)],
       ["Bloom", () => new Bloom(this.context, this.resolution, remover)],

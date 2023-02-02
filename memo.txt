@@ -78,7 +78,6 @@ Effects
       ……は重いので疑似的な方法を取ったほうがよさそう
   Edge
     filter1d * 縦横斜めの4方向
-  //
   ToneCurveStairs
     smoothstepの階段みたいなトーンカーブ
     ToonLike
